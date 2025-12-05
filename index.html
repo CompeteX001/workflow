@@ -1,125 +1,183 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>NCERT Class 10 Science Bot</title>
-    <style>
-        body {
-            background: black;
-            color: #fff;
-            font-family: Arial;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        #chatbox {
-            width: 90%;
-            max-width: 800px;
-            height: 400px;
-            border: 2px solid #ff0000;
-            padding: 10px;
-            overflow-y: scroll;
-            margin-bottom: 10px;
-            box-shadow: 0 0 20px red;
-            background-color: #111;
-        }
-        .user { color: #00eaff; margin: 5px 0; }
-        .bot { color: #00ff77; margin: 5px 0; }
-        input {
-            width: 70%;
-            padding: 10px;
-            border: none;
-            outline: none;
-            box-shadow: 0 0 10px red;
-            background-color: #222;
-            color: #fff;
-        }
-        button {
-            padding: 10px 20px;
-            background: red;
-            border: none;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 0 15px red;
-        }
-        h1 {
-            color: #ff0000;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px red;
-        }
-    </style>
+  <title>Class 10 Science ChatBot</title>
+  <style>
+    body { background: #000; color: #fff; font-family: Arial; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    #chatbox { width: 100%; max-width: 900px; height: 550px; background: #111; border: 2px solid #f00; padding: 10px; overflow-y: auto; box-shadow: 0 0 20px red; margin-bottom: 10px; }
+    .user { color: #0af; margin: 6px 0; }
+    .bot { color: #0f5; margin: 6px 0; }
+    input { width: 70%; padding: 10px; border: none; outline: none; background: #222; color: #fff; box-shadow: 0 0 10px red; }
+    button { padding: 10px 20px; margin-left: 5px; background: #f00; border: none; color: #fff; cursor: pointer; box-shadow: 0 0 15px red; }
+    .topic-title { color: #f70; font-weight: bold; }
+  </style>
 </head>
 <body>
 
-<h1>NCERT Class 10 Science Bot</h1>
-
+<h1>NCERT Class 10 Science ChatBot</h1>
 <div id="chatbox">
-    <p class="bot"><b>Bot:</b> Hello! Ask me about any Class 10 Science topic, and I will give definitions and key points.</p>
+  <p class="bot"><b>Bot:</b> Hi! Ask me definitions, formulas, reactions, or important questions from Class 10 Science.</p>
 </div>
 
-<input type="text" id="userInput" placeholder="Type your question here...">
+<input type="text" id="userInput" placeholder="Type your question...">
 <button onclick="sendMessage()">Ask</button>
 
 <script>
-// Knowledge database with definitions + points
-let knowledge = {
-    "chemical reactions": "Definition: Chemical reaction is a process in which substances change into new substances with different properties. Topics: Combination, decomposition, displacement, double displacement, redox reactions, corrosion, and rancidity.",
-    "acids": "Definition: Acids are substances with pH < 7 that turn blue litmus red. Topics: Reactions with metals, bases, carbonates, indicators, common acids.",
-    "bases": "Definition: Bases are substances with pH > 7 that turn red litmus blue. Topics: Feel soapy, react with acids, produce salts.",
-    "metals": "Definition: Metals are elements that are lustrous, malleable, ductile, and good conductors of heat and electricity. Topics: Physical & chemical properties, extraction.",
-    "non metals": "Definition: Non-metals are elements that are brittle, poor conductors of heat and electricity. Topics: Physical & chemical properties, typical reactions.",
-    "carbon compounds": "Definition: Carbon compounds are organic compounds containing carbon. Topics: Hydrocarbons, functional groups, alcohols, acids, esters.",
-    "periodic classification": "Definition: Arrangement of elements in a table based on atomic number and properties. Topics: Modern periodic table, trends: valency, atomic size, metallic character.",
-    "life processes": "Definition: Processes essential for living organisms to survive. Topics: Nutrition, respiration, transportation, excretion.",
-    "control and coordination": "Definition: Mechanisms by which organisms regulate their body functions. Topics: Nervous system, hormones, reflex actions.",
-    "reproduction": "Definition: Biological process of producing offspring. Topics: Sexual & asexual reproduction, human reproductive system, plant reproduction.",
-    "heredity": "Definition: Passing of traits from parents to offspring. Topics: Mendel's laws, traits, evolution.",
-    "light": "Definition: Light is a form of energy that enables vision. Topics: Reflection, refraction, mirrors, lenses, ray diagrams.",
-    "eye": "Definition: The human eye is an organ that detects light and enables vision. Topics: Structure of eye, defects of vision, dispersion, scattering.",
-    "electricity": "Definition: Electricity is the flow of electric charge. Topics: Ohm's Law, resistance, series & parallel circuits, electric power.",
-    "magnetism": "Definition: Magnetism is the property of certain materials to attract or repel. Topics: Electromagnets, motors, generators.",
-    "sources of energy": "Definition: Sources of energy are means to obtain usable energy. Topics: Renewable & non-renewable sources, conventional & non-conventional energy.",
-    "environment": "Definition: Environment is the surroundings in which organisms live. Topics: Ecosystems, food chains & webs, ozone layer.",
-    "natural resources": "Definition: Natural resources are materials obtained from nature for human use. Topics: Conservation, 3R's, forest & wildlife protection."
+const knowledge = {
+  "Chapter 1": {
+    "chemical reaction": { definition: "A process in which substances react to form new substances with different properties.", points:["Law of conservation of mass","Reactants → Products"], formulas:["2H2 + O2 → 2H2O"], example:"Rusting of iron" },
+    "combination reaction": { definition:"Two or more reactants combine to form one product.", formulas:["A + B → AB"], example:"2Mg + O2 → 2MgO" },
+    "decomposition reaction": { definition:"Compound breaks into simpler substances.", formulas:["AB → A + B"], example:"2KClO3 → 2KCl + 3O2" },
+    "displacement reaction": { definition:"More reactive element displaces less reactive element from its compound.", formulas:["Zn + CuSO4 → ZnSO4 + Cu"], example:"Zinc displacing copper" },
+    "double displacement": { definition:"Exchange of ions between two compounds.", formulas:["AgNO3 + NaCl → AgCl + NaNO3"], example:"Precipitation reaction" },
+    "neutralization": { definition:"Acid + Base → Salt + Water", formulas:["HCl + NaOH → NaCl + H2O"], example:"Titration in lab" },
+    "oxidation": { definition:"Addition of oxygen or removal of hydrogen.", example:"2Mg + O2 → 2MgO" },
+    "reduction": { definition:"Removal of oxygen or addition of hydrogen.", example:"CuO + H2 → Cu + H2O" }
+  },
+  "Chapter 2": {
+    "acid": { definition:"Substance releasing H+ ions in water.", points:["Turns blue litmus red","pH < 7"], example:"HCl" },
+    "base": { definition:"Substance releasing OH- ions in water.", points:["Turns red litmus blue","pH > 7"], example:"NaOH" },
+    "salt": { definition:"Compound formed from neutralization of acid & base.", example:"NaCl" },
+    "neutralization": { definition:"Acid + Base → Salt + Water", formulas:["HCl + NaOH → NaCl + H2O"] },
+    "pH": { definition:"Measure of hydrogen ion concentration", formulas:["pH = -log[H+]"], example:"pH of 0.01M HCl = 2" }
+  },
+  "Chapter 3": {
+    "metal": { definition:"Lustrous, malleable, ductile, good conductor.", example:"Magnesium" },
+    "non-metal": { definition:"Brittle, dull, poor conductor.", example:"Sulphur" },
+    "reactivity series": { definition:"Order of metals based on reactivity.", example:"K > Na > Ca > Mg > Al > Zn > Fe > Cu" },
+    "alloy": { definition:"Homogeneous mixture of metals or metal + non-metal.", example:"Brass = Cu + Zn" }
+  },
+  "Chapter 4": {
+    "hydrocarbon": { definition:"Compounds containing only C & H.", formulas:["C2H4 + H2 → C2H6 (addition)"], example:"Methane, Ethene" },
+    "alcohol": { definition:"Organic compound containing -OH group.", example:"Ethanol" },
+    "acid": { definition:"Organic acids contain -COOH group.", example:"Ethanoic acid" },
+    "ester": { definition:"Reaction of alcohol + acid → ester + water", formulas:["CH3COOH + C2H5OH → CH3COOC2H5 + H2O"], example:"Ethyl acetate" },
+    "soap": { definition:"Sodium/potassium salts of fatty acids used for cleaning", example:"Soap making from fats" }
+  },
+  "Chapter 5": {
+    "periodic table": { definition:"Arrangement of elements by increasing atomic number.", points:["Groups = vertical","Periods = horizontal"], example:"Modern periodic table" },
+    "valency": { definition:"Combining capacity of an element", example:"H=1, O=2" }
+  },
+  "Chapter 6": {
+    "photosynthesis": { definition:"Plants make food using sunlight, CO2 & H2O", formulas:["6CO2 + 6H2O → C6H12O6 + 6O2"] },
+    "respiration": { definition:"Breakdown of food to release energy", formulas:["C6H12O6 + 6O2 → 6CO2 + 6H2O + energy"] },
+    "transportation": { definition:"Movement of substances in plants/animals" }
+  },
+  "Chapter 7": {
+    "nervous system": { definition:"Coordination via neurons and brain/spinal cord", points:["Reflex arc","Stimulus-response"] },
+    "endocrine system": { definition:"Hormones control body functions", example:"Insulin regulates glucose" }
+  },
+  "Chapter 8": {
+    "asexual reproduction": { definition:"Reproduction without gametes", points:["Binary fission","Budding","Fragmentation"] },
+    "sexual reproduction": { definition:"Fusion of male and female gametes", points:["Pollination","Fertilization","Seed formation"] }
+  },
+  "Chapter 9": {
+    "heredity": { definition:"Passing traits from parents to offspring", points:["Genes, chromosomes","Mendelian inheritance"] },
+    "evolution": { definition:"Gradual change in species over generations", points:["Natural selection","Speciation","Adaptations"] }
+  },
+  "Chapter 10": {
+    "reflection": { definition:"Bouncing back of light", formulas:["Angle of incidence = Angle of reflection"] },
+    "refraction": { definition:"Bending of light at boundary", formulas:["n = sin i / sin r"] },
+    "lens formula": { formulas:["1/f = 1/v - 1/u"], example:"f = focal length, v = image distance, u = object distance" },
+    "mirror formula": { formulas:["1/f = 1/v + 1/u"], example:"f = focal length, v = image distance, u = object distance" }
+  },
+  "Chapter 11": {
+    "human eye": { definition:"Eye structure and working", points:["Defects: myopia, hypermetropia","Correction with lenses"] },
+    "dispersion": { definition:"Splitting white light into colors" },
+    "scattering": { definition:"Deviation of light due to particles (blue sky)" }
+  },
+  "Chapter 12": {
+    "ohm's law": { definition:"V ∝ I at constant R", formulas:["V = IR"] },
+    "power": { definition:"Electric power formulas", formulas:["P = VI","P = I^2 R","P = V^2 / R"] },
+    "joule heating": { definition:"Heating effect of current", formulas:["H = I^2 R t"] },
+    "series resistance": { formulas:["R_total = R1 + R2 + R3 + ..."] },
+    "parallel resistance": { formulas:["1/R_total = 1/R1 + 1/R2 + 1/R3 + ..."] }
+  },
+  "Chapter 13": {
+    "magnetic field": { definition:"Field around current-carrying conductor", formulas:["B = μ0 I / 2πr (straight wire)","F = BIL sinθ"] },
+    "right-hand rule": { definition:"Direction of magnetic field using right hand" },
+    "electromagnet": { definition:"Magnet created by current through a coil" }
+  },
+  "Chapter 14": {
+    "renewable energy": { definition:"Energy replenished naturally", points:["Solar","Wind","Hydro"] },
+    "non-renewable energy": { definition:"Fossil fuels, coal, petroleum" }
+  },
+  "Chapter 15": {
+    "ecosystem": { definition:"Community of organisms + environment", points:["Producers, Consumers, Decomposers","Food chains/webs","Pollution"] }
+  },
+  "Chapter 16": {
+    "sustainable development": { definition:"Using resources without harming future generations", points:["Forest/wildlife conservation","Water harvesting","Responsible human-environment interaction"] }
+  }
 };
 
-// Predefined keywords for definition questions
-let definitionKeywords = ["define","what is","tell me about","explain","give definition of","meaning of"];
+const questionPaper = [
+  "Define chemical reaction with example",
+  "Write balanced equation for combustion of methane",
+  "State Ohm's law and Joule's heating formula",
+  "Explain photosynthesis with equation",
+  "Write lens and mirror formulas",
+  "Difference between metals and non-metals",
+  "Explain reproduction in plants and humans",
+  "State laws of reflection and refraction",
+  "Define heredity and evolution",
+  "Write examples of neutralization and double displacement reactions"
+];
+
+const formulaKeywords = ["formula","formulas","reaction","reactions","law","laws","equation","equations","heat formula"];
 
 function sendMessage() {
-    let input = document.getElementById("userInput").value.toLowerCase();
-    document.getElementById("userInput").value = "";
+  let input = document.getElementById("userInput").value.trim();
+  if(!input) return;
+  document.getElementById("userInput").value = "";
+  let lower = input.toLowerCase();
+  let chatbox = document.getElementById("chatbox");
+  chatbox.innerHTML += `<p class="user"><b>You:</b> ${input}</p>`;
 
-    let chatbox = document.getElementById("chatbox");
-    chatbox.innerHTML += `<p class="user"><b>You:</b> ${input}</p>`;
-
-    let foundTopics = [];
-
-    // Check if any topic keyword matches
-    for (let key in knowledge) {
-        if (input.includes(key) || key.split(" ").some(word => input.includes(word))) {
-            foundTopics.push(knowledge[key]);
-        }
-    }
-
-    // Check for definition question patterns
-    let isDefinition = definitionKeywords.some(keyword => input.includes(keyword));
-
-    if (foundTopics.length > 0 && isDefinition) {
-        foundTopics.forEach(topic => {
-            chatbox.innerHTML += `<p class="bot"><b>Bot:</b> ${topic}</p>`;
-        });
-    } else if (foundTopics.length > 0) {
-        // If question mentions topic but not a definition pattern, still return full topic
-        foundTopics.forEach(topic => {
-            chatbox.innerHTML += `<p class="bot"><b>Bot:</b> ${topic}</p>`;
-        });
-    } else {
-        chatbox.innerHTML += `<p class="bot"><b>Bot:</b> Sorry, I am not that knowledgeable about this topic.</p>`;
-    }
-
+  if(lower.includes("question paper") || lower.includes("10 questions")) {
+    let picks = shuffle(questionPaper).slice(0,10);
+    chatbox.innerHTML += `<p class="bot"><b>Bot:</b> Here are 10 important questions:<br>${picks.map(q=>"• "+q).join("<br>")}</p>`;
     chatbox.scrollTop = chatbox.scrollHeight;
+    return;
+  }
+
+  let found = [];
+  for(let ch in knowledge){
+    for(let topic in knowledge[ch]){
+      if(lower.includes(topic) || topic.split(/[\s\-]/).some(w=>lower.includes(w))){
+        found.push({topic, data: knowledge[ch][topic]});
+      }
+    }
+  }
+
+  if(found.length===0){
+    chatbox.innerHTML += `<p class="bot"><b>Bot:</b> Sorry, I am not that knowledgeable about this topic.</p>`;
+  } else {
+    found.forEach(item=>{
+      let top = item.data;
+      let wantFormulas = formulaKeywords.some(k=>lower.includes(k));
+      if(wantFormulas && top.formulas && top.formulas.length>0){
+        chatbox.innerHTML += `<p class="bot"><span class="topic-title">Formulas / Reactions for "${item.topic}":</span><br>${top.formulas.join("<br>")}</p>`;
+      } else {
+        chatbox.innerHTML += `<p class="bot">
+          <span class="topic-title">Topic:</span> ${item.topic}<br>
+          <span class="topic-title">Definition:</span> ${top.definition || ""}<br>
+          ${top.points?("<span class='topic-title'>Important Points:</span> "+top.points.join(", ")+"<br>"):""}
+          ${top.formulas && top.formulas.length>0?("<span class='topic-title'>Formulas / Reactions:</span><br>"+top.formulas.join("<br>")+"<br>"):""}
+          ${top.example?("<span class='topic-title'>Example / Use:</span> "+top.example):""}
+        </p>`;
+      }
+    });
+  }
+  chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+function shuffle(arr){
+  let a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
 }
 </script>
 

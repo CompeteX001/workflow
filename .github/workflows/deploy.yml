@@ -1,0 +1,23 @@
+name: Deploy Website
+
+on:
+  push:
+    branches: [ "main" ]   # deploy when you push to main branch
+  workflow_dispatch:        # allow manual deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # If you have just HTML/CSS/JS, no build step is needed
+      # If you use React/Vue/NextJS, I can give you a build version too
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # If website is in root folder

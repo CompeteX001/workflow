@@ -9,8 +9,8 @@
             box-sizing: border-box;
         }
         body {
-            background: #0a0a0a;
-            color: #fff;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            color: #e0e0e0;
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             padding: 0;
@@ -18,175 +18,199 @@
             overflow-x: hidden;
         }
         .container {
-            max-width: 750px;
+            max-width: 800px;
             margin: 30px auto 0 auto;
-            background: rgba(18, 18, 18, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 0 15px 2px rgba(209, 6, 70, 0.4), 0 0 1px 1px #252525;
-            padding: 20px 16px 80px 16px;
+            background: #1e1e1e;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            padding: 24px 20px 80px 20px;
+            border: 1px solid #2a2a2a;
         }
         h1 {
-            color: #ff1654;
+            color: #f5f5f5;
             font-size: 2em;
             text-align: center;
-            text-shadow: 0px 0px 10px rgba(255, 22, 84, 0.6);
-            margin-bottom: 8px;
-            letter-spacing: 1.2px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
             font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         #chat-window {
-            background: rgba(15, 15, 15, 0.9);
-            border-radius: 8px;
+            background: #171717;
+            border-radius: 12px;
             min-height: 400px;
             max-height: 60vh;
             overflow-y: auto;
             overflow-x: hidden;
-            box-shadow: 0 0 8px 1px rgba(209, 6, 70, 0.3);
-            padding: 16px 12px;
+            padding: 18px 14px;
             margin-bottom: 20px;
             word-break: break-word;
             font-size: 0.98em;
-            line-height: 1.6;
+            line-height: 1.7;
+            border: 1px solid #2a2a2a;
+        }
+        #chat-window::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chat-window::-webkit-scrollbar-track {
+            background: #1e1e1e;
+            border-radius: 4px;
+        }
+        #chat-window::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+        #chat-window::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
         }
         .user-msg {
-            color: #ff4757;
+            color: #f5f5f5;
             font-weight: 600;
-            margin-bottom: 0.5em;
-            padding: 8px 12px;
-            background: rgba(255, 71, 87, 0.08);
-            border-left: 3px solid #ff4757;
-            border-radius: 4px;
-            text-shadow: 0 0 5px rgba(255, 71, 87, 0.3);
+            margin-bottom: 0.8em;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-left: 3px solid #667eea;
+            border-radius: 8px;
         }
         .bot-msg {
-            color: #2ecc71;
+            color: #d0d0d0;
             display: block;
-            font-weight: 500;
+            font-weight: 400;
             margin-bottom: 1.2em;
             font-size: 1em;
-            border-left: 3px solid #2ecc71;
-            padding: 10px 12px;
-            background: rgba(46, 204, 113, 0.05);
-            border-radius: 4px;
-            text-shadow: 0 0 4px rgba(46, 204, 113, 0.2);
-            letter-spacing: 0.3px;
+            border-left: 3px solid #10b981;
+            padding: 12px 16px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 8px;
+            letter-spacing: 0.2px;
         }
         .bot-msg b {
-            color: #27ae60;
-            text-shadow: 0 0 6px rgba(39, 174, 96, 0.4);
+            color: #10b981;
+            font-weight: 600;
         }
         .bot-msg ul, .bot-msg ol {
-            margin: 8px 0;
-            padding-left: 20px;
+            margin: 10px 0;
+            padding-left: 24px;
         }
         .bot-msg li {
-            margin: 6px 0;
+            margin: 8px 0;
+            line-height: 1.6;
         }
         .glow-text {
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-        @keyframes textGlow {
-            from {text-shadow: 0 0 5px rgba(46, 204, 113, 0.3), 0 0 10px rgba(46, 204, 113, 0.2);}
-            to {text-shadow: 0 0 10px rgba(46, 204, 113, 0.6), 0 0 20px rgba(46, 204, 113, 0.3);}
+            color: #10b981;
+            font-weight: 600;
         }
         #entry-bar {
             width: 100%;
             display: flex;
-            gap: 0.6em;
+            gap: 0.8em;
             position: fixed;
             left: 0;
             bottom: 0;
-            background: #0a0a0a;
-            padding: 14px 12px;
-            box-shadow: 0 -2px 20px rgba(209, 6, 70, 0.3);
-            border-top: 1px solid rgba(209, 6, 70, 0.4);
+            background: #1e1e1e;
+            padding: 16px 14px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid #2a2a2a;
             z-index: 100;
         }
         #user-input {
             flex: 1;
-            border-radius: 6px;
-            background: #1a1a1a;
-            color: #fff;
+            border-radius: 8px;
+            background: #171717;
+            color: #e0e0e0;
             font-size: 1em;
-            padding: 12px 14px;
-            border: 1px solid rgba(255, 22, 84, 0.3);
+            padding: 14px 16px;
+            border: 1px solid #2a2a2a;
             outline: none;
             font-family: inherit;
-            transition: border 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
         #user-input:focus {
-            border: 1px solid rgba(255, 22, 84, 0.6);
-            box-shadow: 0 0 8px rgba(255, 22, 84, 0.3);
+            border: 1px solid #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        #user-input::placeholder {
+            color: #6b7280;
         }
         #send-btn {
-            background: linear-gradient(135deg, #ff1654 0%, #d10646 100%);
-            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
             font-size: 1.05em;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             font-weight: 600;
-            letter-spacing: 0.8px;
-            padding: 12px 24px;
+            letter-spacing: 0.5px;
+            padding: 14px 28px;
             cursor: pointer;
             transition: all 0.2s;
-            text-shadow: 0 0 8px rgba(255, 22, 84, 0.5);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
         #send-btn:hover {
-            background: linear-gradient(135deg, #d10646 0%, #a10538 100%);
-            box-shadow: 0 0 12px rgba(255, 22, 84, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
         }
         #send-btn:active {
-            transform: scale(0.97);
+            transform: translateY(0);
         }
         @media (max-width: 600px) {
-            .container{max-width:95vw;padding:12px 3vw 90px 3vw;margin-top:15px;}
+            .container{max-width:95vw;padding:16px 3vw 90px 3vw;margin-top:15px;}
             h1{font-size:1.6em;}
-            #chat-window{font-size:0.92em;max-height:65vh;padding:12px 8px;}
-            #entry-bar{padding:10px 3vw;}
-            #user-input{font-size:0.95em;padding:10px 12px;}
-            #send-btn{font-size:0.95em;padding:10px 18px;}
+            #chat-window{font-size:0.92em;max-height:65vh;padding:14px 10px;}
+            #entry-bar{padding:12px 3vw;}
+            #user-input{font-size:0.95em;padding:12px 14px;}
+            #send-btn{font-size:0.95em;padding:12px 20px;}
         }
         ::selection {
-            background: rgba(255, 22, 84, 0.4);
+            background: rgba(102, 126, 234, 0.3);
             color: #fff;
         }
-        .neon-red {
-            animation: neonredglow 2s infinite alternate;
-        }
-        @keyframes neonredglow {
-            from {text-shadow: 0 0 10px rgba(255, 22, 84, 0.6), 0 0 20px rgba(255, 22, 84, 0.3);}
-            to {text-shadow: 0 0 20px rgba(255, 22, 84, 0.9), 0 0 30px rgba(255, 22, 84, 0.4);}
-        }
         .bot-msg.typing {
-            border-left: 3px solid #16a085!important;
-            color: #1abc9c!important;
-            text-shadow: none;
+            border-left: 3px solid #10b981;
+            color: #a0a0a0;
         }
         .score-display {
-            background: rgba(255, 22, 84, 0.1);
-            padding: 10px;
-            border-radius: 6px;
-            margin: 10px 0;
-            border: 1px solid rgba(255, 22, 84, 0.3);
+            background: rgba(102, 126, 234, 0.1);
+            padding: 14px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border: 1px solid rgba(102, 126, 234, 0.3);
         }
         .mcq-option {
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(46, 204, 113, 0.05);
-            border-left: 2px solid #2ecc71;
-            border-radius: 3px;
+            padding: 10px 14px;
+            margin: 8px 0;
+            background: rgba(16, 185, 129, 0.05);
+            border-left: 3px solid #10b981;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
         }
         .mcq-option:hover {
-            background: rgba(46, 204, 113, 0.15);
-            transform: translateX(3px);
+            background: rgba(16, 185, 129, 0.12);
+            transform: translateX(4px);
+            border-left-width: 4px;
+        }
+        .info-box {
+            background: rgba(102, 126, 234, 0.08);
+            padding: 14px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 3px solid #667eea;
+        }
+        .success-box {
+            background: rgba(16, 185, 129, 0.08);
+            padding: 14px;
+            border-radius: 8px;
+            margin: 12px 0;
+            border-left: 3px solid #10b981;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="neon-red">NCERT 10 Science AI</h1>
+        <h1>NCERT Class 10 Science AI</h1>1>
         <div id="chat-window"></div>
     </div>
     <form id="entry-bar" autocomplete="off" onsubmit="return false;">
@@ -768,6 +792,12 @@ function findBestTopicMatch(query) {
     let bestMatch = null;
     let bestChapter = null;
     let highestScore = 0;
+    
+    // Remove common words that shouldn't trigger matches
+    const commonWords = ['hi', 'hello', 'hey', 'what', 'is', 'the', 'a', 'an', 'how', 'why', 'when', 'where'];
+    if(commonWords.includes(query)) {
+        return null;
+    }
 
     for(const chap in data) {
         for(const key in data[chap].definitions) {
@@ -781,22 +811,41 @@ function findBestTopicMatch(query) {
         }
     }
     
-    return highestScore > 0.3 ? {match: bestMatch, chapter: bestChapter, score: highestScore} : null;
+    // Require much higher threshold for match
+    return highestScore > 0.6 ? {match: bestMatch, chapter: bestChapter, score: highestScore} : null;
 }
 
 function calculateSimilarity(str1, str2) {
-    const words1 = str1.replace(/[^\w\d]/g, ' ').split(/\s+/);
-    const words2 = str2.replace(/[^\w\d]/g, ' ').split(/\s+/);
+    const words1 = str1.replace(/[^\w\d]/g, ' ').toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    const words2 = str2.replace(/[^\w\d]/g, ' ').toLowerCase().split(/\s+/).filter(w => w.length > 2);
+    
+    if(words1.length === 0 || words2.length === 0) return 0;
+    
+    // Check for exact substring match first
+    if(str2.includes(str1) || str1.includes(str2)) {
+        return 1.0;
+    }
+    
     let matches = 0;
+    let totalWords = 0;
     
     for(const w1 of words1) {
+        totalWords++;
+        let bestWordMatch = 0;
         for(const w2 of words2) {
-            if(w1.includes(w2) || w2.includes(w1)) {
-                matches += Math.min(w1.length, w2.length) / Math.max(w1.length, w2.length);
+            if(w1 === w2) {
+                bestWordMatch = 1.0;
+                break;
+            } else if(w1.length > 4 && w2.length > 4) {
+                if(w1.includes(w2) || w2.includes(w1)) {
+                    bestWordMatch = Math.max(bestWordMatch, 0.8);
+                }
             }
         }
+        matches += bestWordMatch;
     }
-    return matches / Math.max(words1.length, words2.length);
+    
+    return totalWords > 0 ? matches / totalWords : 0;
 }
 
 const humorousResponses = [
@@ -1064,6 +1113,21 @@ async function processInput(msg) {
     }
     
     // General topic search (smart matching)
+    
+    // Handle greetings and casual messages
+    const greetings = ['hi', 'hello', 'hey', 'sup', 'yo', 'greetings'];
+    if(greetings.includes(msgL)) {
+        const greetResponses = [
+            "Hey there! 👋 Ready to master some science? Try typing a topic like 'photosynthesis' or 'electricity'!",
+            "Hello! 🔬 I'm here to help you ace Class 10 Science. What topic shall we explore?",
+            "Hi! 😊 Type any science topic or 'manual' to see what I can do!",
+            "Greetings, future scientist! 🧪 What would you like to learn today?"
+        ];
+        reply = greetResponses[Math.floor(Math.random() * greetResponses.length)];
+        appendBotMsg(reply);
+        return;
+    }
+    
     let bestMatch = findBestTopicMatch(msgRaw);
     
     if(bestMatch) {

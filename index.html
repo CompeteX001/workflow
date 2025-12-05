@@ -5,122 +5,182 @@
     <title>NCERT Class 10 Science AI Chatbot</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
-            background: #111;
+            background: #0a0a0a;
             color: #fff;
-            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            overflow-x: hidden;
         }
         .container {
-            max-width: 700px;
-            margin: 40px auto 0 auto;
-            background: rgba(20, 20, 20, 0.9);
-            border-radius: 16px;
-            box-shadow: 0 0 30px 10px #d10646, 0 0 1px 1px #313131;
-            padding: 24px 18px 60px 18px;
+            max-width: 750px;
+            margin: 30px auto 0 auto;
+            background: rgba(18, 18, 18, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 0 15px 2px rgba(209, 6, 70, 0.4), 0 0 1px 1px #252525;
+            padding: 20px 16px 80px 16px;
         }
         h1 {
-            color: #d10646;
-            font-size: 2.3em;
+            color: #ff1654;
+            font-size: 2em;
             text-align: center;
-            text-shadow: 0px 0px 17px #fd004c;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
+            text-shadow: 0px 0px 10px rgba(255, 22, 84, 0.6);
+            margin-bottom: 8px;
+            letter-spacing: 1.2px;
+            font-weight: 700;
         }
         #chat-window {
-            background: rgba(25, 25, 25, 0.85);
-            border-radius: 10px;
-            min-height: 350px;
-            max-height: 46vh;
+            background: rgba(15, 15, 15, 0.9);
+            border-radius: 8px;
+            min-height: 400px;
+            max-height: 60vh;
             overflow-y: auto;
-            box-shadow: 0 0 14px 1px #d10646;
-            padding: 14px 10px;
+            overflow-x: hidden;
+            box-shadow: 0 0 8px 1px rgba(209, 6, 70, 0.3);
+            padding: 16px 12px;
             margin-bottom: 20px;
             word-break: break-word;
-            font-size: 1.05em;
+            font-size: 0.98em;
+            line-height: 1.6;
         }
         .user-msg {
-            color: #ff4747;
-            font-weight: bold;
-            margin-bottom: 0.4em;
+            color: #ff4757;
+            font-weight: 600;
+            margin-bottom: 0.5em;
+            padding: 8px 12px;
+            background: rgba(255, 71, 87, 0.08);
+            border-left: 3px solid #ff4757;
+            border-radius: 4px;
+            text-shadow: 0 0 5px rgba(255, 71, 87, 0.3);
         }
         .bot-msg {
-            color: #29e91a;
-            display: inline-block;
-            font-weight: 600;
-            margin-bottom: 1.1em;
-            font-size: 1.1em;
-            border-left: 3px solid #29e91a;
-            padding-left: 10px;
-            text-shadow: 0px 0px 8px #47ff5a;
-            min-width: 90%;
-            letter-spacing: 0.6px;
+            color: #2ecc71;
+            display: block;
+            font-weight: 500;
+            margin-bottom: 1.2em;
+            font-size: 1em;
+            border-left: 3px solid #2ecc71;
+            padding: 10px 12px;
+            background: rgba(46, 204, 113, 0.05);
+            border-radius: 4px;
+            text-shadow: 0 0 4px rgba(46, 204, 113, 0.2);
+            letter-spacing: 0.3px;
+        }
+        .bot-msg b {
+            color: #27ae60;
+            text-shadow: 0 0 6px rgba(39, 174, 96, 0.4);
+        }
+        .bot-msg ul, .bot-msg ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        .bot-msg li {
+            margin: 6px 0;
+        }
+        .glow-text {
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+        @keyframes textGlow {
+            from {text-shadow: 0 0 5px rgba(46, 204, 113, 0.3), 0 0 10px rgba(46, 204, 113, 0.2);}
+            to {text-shadow: 0 0 10px rgba(46, 204, 113, 0.6), 0 0 20px rgba(46, 204, 113, 0.3);}
         }
         #entry-bar {
             width: 100%;
             display: flex;
-            gap: 0.7em;
+            gap: 0.6em;
             position: fixed;
             left: 0;
             bottom: 0;
-            background: #09090a;
-            padding: 16px 14px;
-            box-shadow: 0 -3px 24px #d10646;
-            border-top: 1px solid #d10646;
-            z-index: 82;
+            background: #0a0a0a;
+            padding: 14px 12px;
+            box-shadow: 0 -2px 20px rgba(209, 6, 70, 0.3);
+            border-top: 1px solid rgba(209, 6, 70, 0.4);
+            z-index: 100;
         }
         #user-input {
             flex: 1;
-            border-radius: 7px;
-            background: #131316;
+            border-radius: 6px;
+            background: #1a1a1a;
             color: #fff;
-            font-size: 1.09em;
-            padding: 13px 11px;
-            border: none;
+            font-size: 1em;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 22, 84, 0.3);
             outline: none;
-            box-shadow: 0px 0px 10px #fd004c7a inset;
             font-family: inherit;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        #user-input:focus {
+            border: 1px solid rgba(255, 22, 84, 0.6);
+            box-shadow: 0 0 8px rgba(255, 22, 84, 0.3);
         }
         #send-btn {
-            background: #ff005c;
+            background: linear-gradient(135deg, #ff1654 0%, #d10646 100%);
             color: #fff;
-            font-size: 1.16em;
-            border-radius: 7px;
+            font-size: 1.05em;
+            border-radius: 6px;
             border: none;
-            box-shadow: 0px 0px 14px #fd004c inset, 0 0 4px #fd004c99;
-            font-weight: 700;
-            letter-spacing: 1px;
-            padding: 12px 23px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            padding: 12px 24px;
             cursor: pointer;
-            transition: background 0.15s;
-            text-shadow: 0 0 14px #ff0066;
+            transition: all 0.2s;
+            text-shadow: 0 0 8px rgba(255, 22, 84, 0.5);
         }
         #send-btn:hover {
-            background: #d10646;
+            background: linear-gradient(135deg, #d10646 0%, #a10538 100%);
+            box-shadow: 0 0 12px rgba(255, 22, 84, 0.5);
+        }
+        #send-btn:active {
+            transform: scale(0.97);
         }
         @media (max-width: 600px) {
-            .container{max-width:96vw;padding:10px 2vw 100px 2vw;}
-            #chat-window{font-size:0.97em;}
-            #entry-bar{padding:12px 3vw;}
+            .container{max-width:95vw;padding:12px 3vw 90px 3vw;margin-top:15px;}
+            h1{font-size:1.6em;}
+            #chat-window{font-size:0.92em;max-height:65vh;padding:12px 8px;}
+            #entry-bar{padding:10px 3vw;}
+            #user-input{font-size:0.95em;padding:10px 12px;}
+            #send-btn{font-size:0.95em;padding:10px 18px;}
         }
         ::selection {
-            background: #fd004c85;
+            background: rgba(255, 22, 84, 0.4);
             color: #fff;
         }
-        /* Neon Animation */
         .neon-red {
-            animation: neonredglow 1.6s infinite alternate;
+            animation: neonredglow 2s infinite alternate;
         }
         @keyframes neonredglow {
-            from {text-shadow: 0 0 24px #fd004c, 0 0 3px #ff718e;}
-            to {text-shadow: 0 0 44px #fd004c, 0 0 7px #d10646;}
+            from {text-shadow: 0 0 10px rgba(255, 22, 84, 0.6), 0 0 20px rgba(255, 22, 84, 0.3);}
+            to {text-shadow: 0 0 20px rgba(255, 22, 84, 0.9), 0 0 30px rgba(255, 22, 84, 0.4);}
         }
         .bot-msg.typing {
-            border-left: 3px solid #103d05!important;
-            color: #16b206!important;
+            border-left: 3px solid #16a085!important;
+            color: #1abc9c!important;
             text-shadow: none;
+        }
+        .score-display {
+            background: rgba(255, 22, 84, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 22, 84, 0.3);
+        }
+        .mcq-option {
+            padding: 8px;
+            margin: 5px 0;
+            background: rgba(46, 204, 113, 0.05);
+            border-left: 2px solid #2ecc71;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mcq-option:hover {
+            background: rgba(46, 204, 113, 0.15);
+            transform: translateX(3px);
         }
     </style>
 </head>
@@ -130,7 +190,7 @@
         <div id="chat-window"></div>
     </div>
     <form id="entry-bar" autocomplete="off" onsubmit="return false;">
-        <input id="user-input" type="text" autocomplete="off" placeholder="Type your science question or command here..." autofocus>
+        <input id="user-input" type="text" autocomplete="off" placeholder="Type your science question..." autofocus>
         <button id="send-btn" type="submit">ASK</button>
     </form>
     <script>
@@ -177,7 +237,6 @@
             "Redox reactions involve simultaneous oxidation and reduction."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 2: Acids, Bases and Salts": {
         definitions: {
             "acid": "A substance that releases H⁺ ions in aqueous solution.",
@@ -215,7 +274,6 @@
             "pH of body fluids is important for health."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 3: Metals and Non-metals": {
         definitions: {
             "metal": "An element that is typically hard, shiny, malleable, ductile, and conducts electricity and heat.",
@@ -242,7 +300,6 @@
             "Non-metals generally form covalent bonds."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 4: Carbon and its Compounds": {
         definitions: {
             "covalent bond": "A chemical bond formed by the sharing of electron pairs between atoms.",
@@ -274,7 +331,6 @@
             "Functional groups determine chemical properties."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 5: Periodic Classification of Elements": {
         definitions: {
             "periodic table": "Arrangement of elements in order of increasing atomic number.",
@@ -297,7 +353,6 @@
             "Modern periodic law: Properties of elements are a periodic function of atomic number."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 6: Life Processes": {
         definitions: {
             "nutrition": "Process of obtaining and utilizing food.",
@@ -325,7 +380,6 @@
             "Transportation involves heart, blood vessels, xylem, and phloem."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 7: Control and Coordination": {
         definitions: {
             "control and coordination": "Processes that help maintain stability and responses in living beings.",
@@ -347,7 +401,6 @@
             "Plants coordinate with hormones and growth movements."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 8: How do Organisms Reproduce?": {
         definitions: {
             "reproduction": "Biological process by which living organisms produce offspring.",
@@ -370,7 +423,6 @@
             "Pollination is crucial for seed formation in plants."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 9: Heredity and Evolution": {
         definitions: {
             "heredity": "Transmission of traits from parents to offspring.",
@@ -394,7 +446,6 @@
             "Fossils and homologous organs are evidence of evolution."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 10: Light – Reflection and Refraction": {
         definitions: {
             "reflection": "Bouncing back of light from a surface.",
@@ -420,7 +471,6 @@
             "Two laws of reflection: i = r and incident, reflected rays and normal lie in same plane."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 11: The Human Eye and the Colourful World": {
         definitions: {
             "pupil": "Aperture in the center of iris; regulates light entry.",
@@ -444,7 +494,6 @@
             "Sky appears blue due to scattering."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 12: Electricity": {
         definitions: {
             "electric current": "Rate of flow of electric charge: I = Q/t.",
@@ -458,7 +507,7 @@
         },
         formulas: [
             "Ohm's Law: V = IR",
-            "Power: P = VI; P = I^2R; P = V^2/R",
+            "Power: P = VI; P = I²R; P = V²/R",
             "Energy: E = P × t (kWh)",
             "Rseries = R1 + R2 + ...",
             "1/Rparallel = 1/R1 + 1/R2 + ..."
@@ -474,7 +523,6 @@
             "Electric energy is measured in kilowatt hour (kWh)."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 13: Magnetic Effects of Electric Current": {
         definitions: {
             "magnetic field": "Region around a magnet where force is felt.",
@@ -497,7 +545,6 @@
             "Thumb rule gives direction of field."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 14: Sources of Energy": {
         definitions: {
             "renewable energy": "Energy from sources that can be replenished.",
@@ -518,7 +565,6 @@
             "Biogas is a clean energy source."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 15: Our Environment": {
         definitions: {
             "ecosystem": "Interaction of living and non-living things in an area.",
@@ -540,7 +586,6 @@
             "Waste management prevents pollution."
         ]
     },
-    // -----------------------------------------------------------------------
     "Chapter 16: Management of Natural Resources": {
         definitions: {
             "resource": "Anything that can be used for benefit.",
@@ -565,8 +610,6 @@
 
 // Global array of exam-style random questions
 const globalQuestions = [
-    // Some sample questions per chapter (expand as needed)
-    // ------------C1
     "Define chemical reaction.",
     "Explain the law of conservation of mass with example.",
     "List types of chemical reactions and give one example for each.",
@@ -577,88 +620,100 @@ const globalQuestions = [
     "State two observations you may notice during a chemical reaction.",
     "How is rancidity prevented?",
     "Give an example of a combination reaction.",
-    // ------------C2
     "What is the pH scale? How is it used?",
     "Write the reaction for the preparation of baking soda.",
     "Explain neutralization with a chemical equation.",
     "Name two indicators and their colour changes.",
     "Why is common salt important in daily life?",
     "Define acid and base.",
-    // ------------C3
     "What is the reactivity series of metals?",
     "Write the equation for the reaction of sodium with water.",
     "What is corrosion? How can it be prevented?",
     "Differentiate between metal and non-metal.",
-    // ------------C4
     "Define isomerism with an example.",
     "Give the reaction for the combustion of methane.",
     "Explain the term homologous series.",
     "What is soap? How is it formed?",
-    // ------------C5
     "What is modern periodic law?",
     "Explain trends in atomic size in the periodic table.",
     "Define group and period in periodic table.",
     "What is metallic character?",
-    // ------------C6
     "Write the equation for aerobic respiration.",
     "Explain autotrophic and heterotrophic nutrition.",
     "What is the function of nephron in kidney?",
-    // ------------C7
     "What is a neuron?",
     "Explain reflex action with example.",
     "What is the role of hormone adrenaline?",
-    // ------------C8
     "Define sexual reproduction.",
     "Explain vegetative propagation with examples.",
     "What is pollination?",
-    // ------------C9
     "Define heredity.",
     "What is speciation?",
     "Explain Mendel's law of segregation.",
-    // ------------C10
     "State laws of reflection.",
     "Define refraction with example.",
     "Write mirror formula.",
     "Explain magnification with formula.",
     "What is refractive index?",
-    // ------------C11
     "What is myopia and how is it corrected?",
     "Define dispersion of light.",
     "Why do stars twinkle?",
-    // ------------C12
     "State Ohm's law.",
     "Define potential difference.",
     "Write formula for resistance in parallel.",
     "What is kilowatt hour?",
-    // ------------C13
     "Explain electromagnetic induction.",
     "State Fleming's left hand rule.",
     "What is an electromagnet?",
-    // ------------C14
     "Define renewable energy source.",
     "Give two examples of non-renewable sources.",
-    // ------------C15
     "Explain food chain with example.",
     "List three methods of waste management.",
-    // ------------C16
     "What is water harvesting?",
-    "Explain the 3Rs with example.",
+    "Explain the 3Rs with example."
 ];
 
-const manualText = `<span style="color:#fd004c;font-weight:600;text-shadow:1px 0px 8px #fd004c;">NCERT Science Bot – Manual Commands</span>
-<ul>
-<li><b>question</b>: Get 10 random exam-style questions from the whole syllabus.</li>
-<li><b>[topic]</b>: Enter any topic, e.g. "chemical reaction", "baking soda", "autotrophic nutrition" etc. – you get the definition, core points, formulas, and examples.</li>
-<li><b>types of [topic]</b> or <b>types of reaction</b>: Shows all types for that topic, with definitions / sample equations.</li>
-<li><b>definition [topic]</b>: Get definition only for a specific topic (matched anywhere in the code).</li>
-<li><b>all definitions of [chapter]</b>: Shows all definitions from a specific chapter.</li>
-<li><b>formula [topic]</b>: Lists formulas for the topic + usage examples if available.</li>
-<li><b>summary [chapter/topic]</b>: Get summary bullet-points for chapter/topic.</li>
-<li><b>example [topic]</b>: Get solved/problem examples for topic.</li>
-<li><b>faq [topic]</b>: Get frequently asked question(s) and answer(s) for topic if available.</li>
-<li><b>manual</b> or <b>help</b>: Show this help/command manual.</li>
+// MCQ Database
+const mcqDatabase = [
+    {q: "Which of the following is an example of a decomposition reaction?", options: ["CaCO₃ → CaO + CO₂", "2Mg + O₂ → 2MgO", "Zn + CuSO₄ → ZnSO₄ + Cu", "NaOH + HCl → NaCl + H₂O"], correct: 0},
+    {q: "The pH of lemon juice is approximately:", options: ["2", "7", "10", "14"], correct: 0},
+    {q: "Which metal is most reactive?", options: ["Gold", "Silver", "Potassium", "Copper"], correct: 2},
+    {q: "Ethanol is converted to ethanoic acid by:", options: ["Addition", "Substitution", "Oxidation", "Reduction"], correct: 2},
+    {q: "The SI unit of electric current is:", options: ["Volt", "Ampere", "Ohm", "Watt"], correct: 1},
+    {q: "Mitochondria is known as:", options: ["Powerhouse of cell", "Suicide bag", "Control center", "Protein factory"], correct: 0},
+    {q: "The focal length of a convex lens is:", options: ["Negative", "Positive", "Zero", "Infinite"], correct: 1},
+    {q: "Myopia can be corrected using:", options: ["Convex lens", "Concave lens", "Bifocal lens", "Cylindrical lens"], correct: 1},
+    {q: "Biogas mainly contains:", options: ["Oxygen", "Nitrogen", "Methane", "Carbon monoxide"], correct: 2},
+    {q: "Ozone layer protects us from:", options: ["Infrared rays", "UV rays", "X-rays", "Gamma rays"], correct: 1},
+    {q: "In series combination of resistors, total resistance:", options: ["Decreases", "Remains same", "Increases", "Becomes zero"], correct: 2},
+    {q: "Chromosomes are made of:", options: ["DNA and proteins", "RNA only", "Lipids", "Carbohydrates"], correct: 0},
+    {q: "Photosynthesis occurs in:", options: ["Mitochondria", "Chloroplast", "Nucleus", "Ribosome"], correct: 1},
+    {q: "The chemical formula of washing soda is:", options: ["NaHCO₃", "Na₂CO₃·10H₂O", "NaCl", "CaOCl₂"], correct: 1},
+    {q: "Twinkling of stars is due to:", options: ["Reflection", "Refraction", "Dispersion", "Scattering"], correct: 1}
+];
+
+let currentMCQIndex = 0;
+let mcqScore = 0;
+let mcqTotal = 0;
+let inMCQMode = false;
+
+const manualText = `<span style="color:#ff1654;font-weight:600;text-shadow:1px 0px 8px rgba(255, 22, 84, 0.5);">NCERT Science Bot – Command Manual</span>
+<ul style="line-height:1.8;">
+<li><b>question</b> - Get 10 random exam-style questions from entire syllabus</li>
+<li><b>test</b> - Start full test mode with 10 MCQs + 10 written questions with scoring</li>
+<li><b>mcq</b> - Practice single MCQ questions one by one</li>
+<li><b>[any topic keyword]</b> - Type any topic like "decomposition", "electricity", "photosynthesis" and I'll find the best match!</li>
+<li><b>formula of [chapter/topic]</b> - Get all formulas from that chapter with examples</li>
+<li><b>types of [topic]</b> - Shows all types with definitions</li>
+<li><b>definition [topic]</b> - Get specific definition only</li>
+<li><b>all definitions of [chapter]</b> - All definitions from a chapter</li>
+<li><b>summary [chapter/topic]</b> - Quick summary bullet points</li>
+<li><b>example [topic]</b> - Get solved examples for the topic</li>
+<li><b>manual</b> or <b>help</b> - Show this command list</li>
 </ul>
-`;
+<div style="margin-top:10px;padding:8px;background:rgba(46,204,113,0.1);border-left:3px solid #2ecc71;border-radius:4px;">
+<b>💡 Pro Tip:</b> Just type keywords! For example: "decomposition", "baking soda", "electricity formula", "test photosynthesis" - I'm smart enough to understand! 😎
+</div>`;
 
 function getRandomQuestions() {
     let arr = [];
@@ -675,13 +730,28 @@ function getRandomQuestions() {
     return arr;
 }
 
-// Utility: Case-insensitive fuzzy match in an object keys
+function getRandomMCQs(count) {
+    let arr = [];
+    let used = {};
+    let attempts = 0;
+    while (arr.length < count && attempts < mcqDatabase.length * 3) {
+        let r = Math.floor(Math.random() * mcqDatabase.length);
+        if (!used[r]) {
+            arr.push(mcqDatabase[r]);
+            used[r] = 1;
+        }
+        attempts++;
+    }
+    return arr;
+}
+
+// Utility functions
 function objectFind(obj, key) {
     key = key.toLowerCase().trim();
     const found = Object.keys(obj).filter(k =>
         k.replace(/[^\w\d]/g,'').toLowerCase().includes(key.replace(/[^\w\d]/g,'').toLowerCase())
     );
-    return found.length ? obj[found[0]] : null;
+    return found.length ? {key: found[0], value: obj[found[0]]} : null;
 }
 
 function chapterFind(chapInput) {
@@ -693,44 +763,146 @@ function chapterFind(chapInput) {
     return null;
 }
 
-// -- Chatbot System Logic --
+function findBestTopicMatch(query) {
+    query = query.toLowerCase().trim();
+    let bestMatch = null;
+    let bestChapter = null;
+    let highestScore = 0;
+
+    for(const chap in data) {
+        for(const key in data[chap].definitions) {
+            const keyLower = key.toLowerCase();
+            const similarity = calculateSimilarity(query, keyLower);
+            if(similarity > highestScore) {
+                highestScore = similarity;
+                bestMatch = key;
+                bestChapter = chap;
+            }
+        }
+    }
+    
+    return highestScore > 0.3 ? {match: bestMatch, chapter: bestChapter, score: highestScore} : null;
+}
+
+function calculateSimilarity(str1, str2) {
+    const words1 = str1.replace(/[^\w\d]/g, ' ').split(/\s+/);
+    const words2 = str2.replace(/[^\w\d]/g, ' ').split(/\s+/);
+    let matches = 0;
+    
+    for(const w1 of words1) {
+        for(const w2 of words2) {
+            if(w1.includes(w2) || w2.includes(w1)) {
+                matches += Math.min(w1.length, w2.length) / Math.max(w1.length, w2.length);
+            }
+        }
+    }
+    return matches / Math.max(words1.length, words2.length);
+}
+
+const humorousResponses = [
+    "Wow, that was faster than my internet connection! 😅 Next question coming up...",
+    "Alright speed demon, let's see if you can handle the next one! 🚀",
+    "Someone's on fire today! 🔥 But can you keep up?",
+    "Impressive! Or did you just get lucky? 🤔 Let's find out...",
+    "Okay Einstein, calm down! 😎 Here's the next one...",
+    "You're making this look too easy! Time to turn up the heat! 🌶️"
+];
+
+// Main chatbot processing
 async function processInput(msg) {
     const msgRaw = msg.trim();
     const msgL = msgRaw.toLowerCase();
-    let chatWindow = document.getElementById('chat-window');
     let reply = "";
 
     if (!msgRaw) return;
 
-    // === 1. Manual/help
+    // MCQ Mode handling
+    if (inMCQMode) {
+        if (msgL === "right" || msgL === "next" || msgL === "skip") {
+            currentMCQIndex++;
+            if (currentMCQIndex >= mcqDatabase.length) {
+                currentMCQIndex = 0;
+            }
+            const humor = humorousResponses[Math.floor(Math.random() * humorousResponses.length)];
+            reply = `<div class="glow-text">${humor}</div><br>`;
+            reply += displayMCQ(mcqDatabase[currentMCQIndex], currentMCQIndex);
+            appendBotMsg(reply);
+            return;
+        } else if (msgL === "exit" || msgL === "stop") {
+            inMCQMode = false;
+            reply = "MCQ practice mode ended! 📚 Type 'mcq' anytime to practice again.";
+            appendBotMsg(reply);
+            return;
+        }
+    }
+
+    // Command: manual/help
     if (msgL === "manual" || msgL === "help" || msgL === "/help") {
         reply = manualText;
         appendBotMsg(reply);
         return;
     }
 
-    // === 2. Get random 10 questions
+    // Command: test mode
+    if (msgL.includes("test")) {
+        let mcqs = getRandomMCQs(10);
+        let questions = getRandomQuestions();
+        
+        reply = `<div class="glow-text" style="font-size:1.2em;margin-bottom:15px;">🎯 TEST MODE ACTIVATED! 🎯</div>`;
+        reply += `<div class="score-display"><b>Part A: Multiple Choice Questions (10 × 1 = 10 marks)</b></div>`;
+        
+        mcqs.forEach((mcq, i) => {
+            reply += `<div style="margin:15px 0;"><b>Q${i+1}.</b> ${mcq.q}<br>`;
+            mcq.options.forEach((opt, j) => {
+                reply += `<div class="mcq-option">${String.fromCharCode(65+j)}) ${opt}</div>`;
+            });
+            reply += `</div>`;
+        });
+        
+        reply += `<div class="score-display" style="margin-top:20px;"><b>Part B: Written Questions (10 × 2 = 20 marks)</b></div><ol>`;
+        questions.forEach(q => {
+            reply += `<li style="margin:10px 0;">${q}</li>`;
+        });
+        reply += `</ol>`;
+        reply += `<div style="margin-top:20px;padding:12px;background:rgba(255,22,84,0.1);border-radius:6px;"><b>📝 Total: 30 Marks | Time: 45 minutes</b><br>All the best! 💪</div>`;
+        
+        appendBotMsg(reply);
+        return;
+    }
+
+    // Command: MCQ practice mode
+    if (msgL === "mcq") {
+        inMCQMode = true;
+        currentMCQIndex = Math.floor(Math.random() * mcqDatabase.length);
+        reply = `<div class="glow-text">🎮 MCQ Practice Mode Activated!</div><br>`;
+        reply += `Type <b>'right'</b>, <b>'next'</b>, or <b>'skip'</b> to move to the next question.<br>`;
+        reply += `Type <b>'exit'</b> to stop practicing.<br><br>`;
+        reply += displayMCQ(mcqDatabase[currentMCQIndex], currentMCQIndex);
+        appendBotMsg(reply);
+        return;
+    }
+
+    // Command: Get random questions
     if (msgL === "question" || msgL === "questions") {
         let qArr = getRandomQuestions();
-        reply = `<div style="font-weight:600;font-size:1.09em;">Here are 10 random questions for exam practice:</div>`;
-        reply += "<ol>";
-        for(const q of qArr) reply += `<li>${q}</li>`;
+        reply = `<div class="glow-text" style="font-weight:600;font-size:1.1em;">📝 10 Random Exam Questions:</div><ol>`;
+        for(const q of qArr) reply += `<li style="margin:8px 0;">${q}</li>`;
         reply += "</ol>";
         appendBotMsg(reply);
         return;
     }
 
-    // === 3. All definitions of [chapter]
+    // Command: All definitions of chapter
     if (msgL.startsWith("all definitions of")) {
         let chapterName = msgRaw.substr(18).trim();
         let chap = chapterFind(chapterName);
         if(!chap) {
-            reply = "Chapter not found. Try phrases like 'all definitions of electricity'.";
+            reply = "🤔 Hmm, I couldn't find that chapter. Try something like 'all definitions of electricity' or 'all definitions of acids bases salts'.";
         } else {
             let defs = data[chap]?.definitions;
             if(!defs) reply = "No definitions found for " + chap + ".";
             else {
-                reply = `<span style="font-size:1.13em;font-weight:500;color:#29e91a;margin-bottom:9px;">All definitions from <b>${chap}</b>:</span><ul>`;
+                reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">📚 All Definitions from <b>${chap}</b>:</div><ul style="line-height:1.8;">`;
                 for(const k in defs) reply += `<li><b>${k}:</b> ${defs[k]}</li>`;
                 reply += "</ul>";
             }
@@ -739,201 +911,240 @@ async function processInput(msg) {
         return;
     }
 
-    // === 4. Definition [topic]
+    // Command: Definition [topic]
     if (msgL.startsWith("definition")) {
         let key = msgRaw.substr(10).trim();
         let foundDef = null;
+        let foundKey = null;
+        
         for(const chap in data) {
-            foundDef = objectFind(data[chap].definitions || {}, key);
-            if(foundDef) {
-                reply = `<b>Definition of ${key}:</b> ${foundDef}`;
+            let result = objectFind(data[chap].definitions || {}, key);
+            if(result) {
+                foundDef = result.value;
+                foundKey = result.key;
                 break;
             }
         }
-        if(!foundDef) reply = "No definition found. Try again with a clear keyword.";
+        
+        if(!foundDef) {
+            let bestMatch = findBestTopicMatch(key);
+            if(bestMatch) {
+                reply = `🤔 Did you mean <b>"${bestMatch.match}"</b>?<br><br>`;
+                reply += `<b>Definition:</b> ${data[bestMatch.chapter].definitions[bestMatch.match]}`;
+            } else {
+                reply = "😕 Couldn't find that definition. Try using keywords like 'acid', 'photosynthesis', 'reflection', etc.";
+            }
+        } else {
+            reply = `<div class="glow-text"><b>Definition of ${foundKey}:</b></div><br>${foundDef}`;
+        }
+        
         appendBotMsg(reply);
         return;
     }
 
-    // === 5. All formulas for [topic]
-    if (msgL.startsWith("formula")) {
-        let key = msgRaw.substr(7).trim();
-        let foundForm = null;
-        let examplesList = [];
-        for(const chap in data) {
+    // Command: Formula of [chapter/topic]
+    if (msgL.startsWith("formula of") || msgL.startsWith("formulas of")) {
+        let key = msgRaw.replace(/^formulas? of /i, '').trim();
+        let chap = chapterFind(key);
+        
+        if(chap) {
             let forms = data[chap].formulas || [];
             let eqs = data[chap].equations || [];
             let exs = data[chap].examples || [];
-            for(const f of forms.concat(eqs)) {
-                if(f.toLowerCase().includes(key.toLowerCase())) {
-                    foundForm = foundForm || [];
-                    foundForm.push(f);
+            
+            if(forms.length === 0 && eqs.length === 0) {
+                reply = `📝 No specific formulas found in ${chap}, but here are the key points and examples:<br><br>`;
+                if(data[chap].points) {
+                    reply += "<b>Key Points:</b><ul>";
+                    data[chap].points.forEach(p => reply += `<li>${p}</li>`);
+                    reply += "</ul>";
+                }
+            } else {
+                reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">🧮 Formulas from <b>${chap}</b>:</div>`;
+                
+                if(forms.length) {
+                    reply += "<div style='margin:10px 0;'><b>Formulas:</b><ul>";
+                    forms.forEach(f => reply += `<li>${f}</li>`);
+                    reply += "</ul></div>";
+                }
+                
+                if(eqs.length) {
+                    reply += "<div style='margin:10px 0;'><b>Important Equations:</b><ul>";
+                    eqs.forEach(e => reply += `<li>${e}</li>`);
+                    reply += "</ul></div>";
+                }
+                
+                if(exs.length) {
+                    reply += "<div style='margin:10px 0;'><b>Examples:</b><ul>";
+                    exs.forEach(ex => reply += `<li>${ex}</li>`);
+                    reply += "</ul></div>";
                 }
             }
-            for(const ex of exs) {
-                if(ex.toLowerCase().includes(key.toLowerCase())) {
-                    examplesList.push(ex);
-                }
-            }
+        } else {
+            reply = "🤔 I couldn't find that chapter. Try 'formula of electricity' or 'formula of light reflection'.";
         }
-        if(!foundForm) reply = "No formula found for '" + key + "'.";
-        else {
-            reply = `<b>Formulas for '${key}':</b><br>`;
-            for(const f of foundForm) reply += `<div style="margin-bottom:5px;">${f}</div>`;
-            if (examplesList.length) {
-                reply += `<span style="font-weight:600;font-size:1.08em;">Examples:</span><ul>`;
-                for(const ex of examplesList) reply += `<li>${ex}</li>`;
-                reply += "</ul>";
-            }
-        }
+        
         appendBotMsg(reply);
         return;
     }
 
-    // === 6. Types of [topic] or types of reaction
+    // Command: Types of [topic]
     if (/^types of/.test(msgL)) {
         let key = msgRaw.replace(/^types of /i, '').trim();
         let found = null;
+        
         for(const chap in data) {
             if(data[chap].typesOfReaction) {
-                found = data[chap].typesOfReaction.filter(obj =>
-                    obj.type.toLowerCase().includes(key.toLowerCase()) ||
-                    "reaction".includes(key.toLowerCase())
-                );
-                if(found.length === 0 && key.toLowerCase()==="reaction")
-                    found = data[chap].typesOfReaction;
-                if(found.length) {
-                    let replyArr = [];
-                    for(const obj of found)
-                        replyArr.push(`<b>${obj.type}:</b> ${obj.def}`);
-                    reply = replyArr.join("<br>");
-                    break;
-                }
+                found = data[chap].typesOfReaction;
+                break;
             }
         }
-        if(!found || found.length===0) {
-            // Show default 'types of reactions' for Ch.1
-            reply = "";
-            let chap = data["Chapter 1: Chemical Reactions and Equations"];
-            if(chap?.typesOfReaction) {
-                for(const obj of chap.typesOfReaction)
-                    reply += `<b>${obj.type}:</b> ${obj.def}<br>`;
-            } else reply = "No types found for '" + key + "'.";
+        
+        if(found) {
+            reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">⚗️ Types of ${key}:</div>`;
+            found.forEach(obj => {
+                reply += `<div style="margin:12px 0;padding:10px;background:rgba(46,204,113,0.05);border-left:3px solid #2ecc71;border-radius:4px;">`;
+                reply += `<b>${obj.type}:</b> ${obj.def}</div>`;
+            });
+        } else {
+            reply = "No types found for that topic. Try 'types of reaction' or 'types of chemical reactions'.";
         }
+        
         appendBotMsg(reply);
         return;
     }
 
-    // === 7. Summary [chapter/topic]
+    // Command: Summary [chapter/topic]
     if (msgL.startsWith("summary")) {
         let key = msgRaw.substr(7).trim();
         let found = null;
+        let chapName = null;
+        
         for(const chap in data) {
             if(chap.toLowerCase().includes(key.toLowerCase())) {
                 found = data[chap].points || [];
+                chapName = chap;
                 break;
             }
-            for(const pt of (data[chap].points || [])) {
-                if(pt.toLowerCase().includes(key.toLowerCase())) {
-                    found = [pt];
-                    break;
-                }
-            }
         }
-        if(!found) reply = "No summary found for '" + key + "'.";
-        else {
-            reply = `<b>Summary of '${key}':</b><ul>`;
+        
+        if(!found || found.length === 0) {
+            reply = "😕 No summary found. Try 'summary electricity' or 'summary life processes'.";
+        } else {
+            reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">📋 Summary of ${chapName}:</div><ul style="line-height:1.8;">`;
             for(const pt of found) reply += `<li>${pt}</li>`;
             reply += "</ul>";
         }
+        
         appendBotMsg(reply);
         return;
     }
 
-    // === 8. Example [topic]
+    // Command: Example [topic]
     if(msgL.startsWith("example")) {
         let key = msgRaw.substr(7).trim();
         let found = [];
+        
         for(const chap in data) {
             for(const ex of (data[chap].examples||[])) {
                 if(ex.toLowerCase().includes(key.toLowerCase()))
                     found.push(ex);
             }
         }
-        if(!found.length) reply = "No specific example found for '" + key + "'.";
+        
+        if(!found.length) reply = "🔍 No specific examples found for that topic. Try being more specific!";
         else {
-            reply = `<b>Examples for '${key}':</b><ul>`;
+            reply = `<div class="glow-text"><b>Examples for '${key}':</b></div><ul style="line-height:1.8;">`;
             for(const ex of found) reply += `<li>${ex}</li>`;
             reply += "</ul>";
         }
-        appendBotMsg(reply);
-        return;
-    }
-
-    // === 9. FAQ [topic]
-    if(msgL.startsWith("faq")) {
-        let key = msgRaw.substr(3).trim();
-        // For now, show one common doubt per topic from points
-        let foundFAQ = [];
-        for(const chap in data) {
-            if (data[chap].points) {
-                for(const pt of data[chap].points) {
-                    if(pt.toLowerCase().includes(key.toLowerCase())) foundFAQ.push(pt);
-                }
-            }
-        }
-        if(!foundFAQ.length) reply = "No FAQ found for '" + key + "'.";
-        else reply = `<b>FAQs for '${key}':</b><ul>` + foundFAQ.map(f=>`<li>${f}</li>`).join('') + "</ul>";
+        
         appendBotMsg(reply);
         return;
     }
     
-    // === 10. Topic search and match (most sophisticated)
-    // e.g., "chemical reaction", "autotrophic nutrition"
-    let topicKey = msgRaw;
-    let found = [];
-    for(const chap in data) {
-        let defs = data[chap].definitions || {};
-        let pts = data[chap].points || [];
-        let eqs = data[chap].equations || [];
-        let forms = data[chap].formulas || [];
-        let exs = data[chap].examples || [];
-        let matchArr = [];
-        // If topic matches a definition key
-        for(const k in defs) {
-            if(k.replace(/[^\w\d]/g,'').toLowerCase().includes(topicKey.replace(/[^\w\d]/g,'').toLowerCase())) {
-                matchArr.push(`<b>Definition:</b> ${defs[k]}`);
-            }
+    // General topic search (smart matching)
+    let bestMatch = findBestTopicMatch(msgRaw);
+    
+    if(bestMatch) {
+        let chap = bestMatch.chapter;
+        let topic = bestMatch.match;
+        
+        reply = `<div class="glow-text">💡 Oh, you mean <b>"${topic}"</b>! Here's everything about it:</div><br>`;
+        
+        // Definition
+        if(data[chap].definitions[topic]) {
+            reply += `<div style="margin:12px 0;padding:12px;background:rgba(46,204,113,0.08);border-left:3px solid #2ecc71;border-radius:4px;">`;
+            reply += `<b>📖 Definition:</b> ${data[chap].definitions[topic]}</div>`;
         }
-        // If topic matches points
-        for(const p of pts)
-            if(p.toLowerCase().includes(topicKey.toLowerCase()))
-                matchArr.push(`<b>Key Point:</b> ${p}`);
-        // If topic matches equations or formulas
-        for(const f of forms)
-            if(f.toLowerCase().includes(topicKey.toLowerCase()))
-                matchArr.push(`<b>Formula:</b> ${f}`);
-        for(const e of eqs)
-            if(e.toLowerCase().includes(topicKey.toLowerCase()))
-                matchArr.push(`<b>Chemical Equation:</b> ${e}`);
-        // If topic matches solved examples
-        for(const x of exs)
-            if(x.toLowerCase().includes(topicKey.toLowerCase()))
-                matchArr.push(`<b>Example:</b> ${x}`);
-        if(matchArr.length) {
-            found = matchArr;
-            break;
+        
+        // Related formulas
+        let relatedFormulas = [];
+        if(data[chap].formulas) {
+            relatedFormulas = data[chap].formulas.filter(f => 
+                f.toLowerCase().includes(topic.toLowerCase())
+            );
         }
+        if(relatedFormulas.length) {
+            reply += `<div style="margin:12px 0;"><b>🧮 Related Formulas:</b><ul>`;
+            relatedFormulas.forEach(f => reply += `<li>${f}</li>`);
+            reply += `</ul></div>`;
+        }
+        
+        // Examples
+        let relatedExamples = [];
+        if(data[chap].examples) {
+            relatedExamples = data[chap].examples.filter(ex => 
+                ex.toLowerCase().includes(topic.toLowerCase())
+            );
+        }
+        if(relatedExamples.length) {
+            reply += `<div style="margin:12px 0;"><b>💡 Examples:</b><ul>`;
+            relatedExamples.forEach(ex => reply += `<li>${ex}</li>`);
+            reply += `</ul></div>`;
+        }
+        
+        // Key points
+        let relatedPoints = [];
+        if(data[chap].points) {
+            relatedPoints = data[chap].points.filter(p => 
+                p.toLowerCase().includes(topic.toLowerCase())
+            );
+        }
+        if(relatedPoints.length) {
+            reply += `<div style="margin:12px 0;"><b>🎯 Key Points:</b><ul>`;
+            relatedPoints.forEach(p => reply += `<li>${p}</li>`);
+            reply += `</ul></div>`;
+        }
+        
+        reply += `<div style="margin-top:15px;padding:10px;background:rgba(255,22,84,0.08);border-radius:4px;font-size:0.95em;">`;
+        reply += `<b>From Chapter:</b> ${chap}</div>`;
+        
+    } else {
+        reply = "🤔 Hmm, I couldn't quite understand that. Try:<br>";
+        reply += "• Typing a clear keyword like 'decomposition', 'electricity', 'photosynthesis'<br>";
+        reply += "• Using commands like 'formula of electricity' or 'types of reaction'<br>";
+        reply += "• Type <b>'manual'</b> to see all available commands!<br>";
+        reply += "• Or try <b>'test'</b> for a full practice test! 📝";
     }
-    if(!found.length) reply = "Sorry, I couldn't find that topic. Try asking for a definition, formula, example, or check the manual.";
-    else reply = found.join("<br>");
+    
     appendBotMsg(reply);
 }
 
-// --- Chat Output Logic (with Typing Animation) ---
+function displayMCQ(mcq, index) {
+    let html = `<div style="padding:15px;background:rgba(46,204,113,0.08);border-radius:8px;border-left:4px solid #2ecc71;">`;
+    html += `<b>Question ${index + 1}:</b> ${mcq.q}<br><br>`;
+    mcq.options.forEach((opt, i) => {
+        html += `<div class="mcq-option">${String.fromCharCode(65+i)}) ${opt}</div>`;
+    });
+    html += `</div>`;
+    return html;
+}
+
+// Chat output functions
 function appendUserMsg(msg) {
     let chatWindow = document.getElementById('chat-window');
-    chatWindow.innerHTML += `<div class="user-msg">${msg}</div>`;
+    chatWindow.innerHTML += `<div class="user-msg">👤 ${msg}</div>`;
     chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
@@ -942,14 +1153,14 @@ function appendBotMsg(msg) {
     let botDiv = document.createElement('div');
     botDiv.className = 'bot-msg typing';
     chatWindow.appendChild(botDiv);
-    // Typing animation logic
+    
     let i = 0;
     function typingStep() {
         if (i <= msg.length) {
-            botDiv.innerHTML = msg.slice(0, i) + "<span style='border-right:2px solid #29e91a;font-size:0.98em;'> </span>";
+            botDiv.innerHTML = msg.slice(0, i) + "<span style='border-right:2px solid #2ecc71;'> </span>";
             chatWindow.scrollTop = chatWindow.scrollHeight;
             i++;
-            setTimeout(typingStep, 12 + Math.floor(Math.random()*15));
+            setTimeout(typingStep, 8 + Math.floor(Math.random()*12));
         } else {
             botDiv.innerHTML = msg;
             botDiv.className = 'bot-msg';
@@ -959,6 +1170,7 @@ function appendBotMsg(msg) {
     typingStep();
 }
 
+// Event listeners
 document.getElementById('send-btn').onclick = function(){
     let val = document.getElementById('user-input').value.trim();
     if(!val) return;
@@ -966,19 +1178,29 @@ document.getElementById('send-btn').onclick = function(){
     processInput(val);
     document.getElementById('user-input').value = "";
 };
+
 document.getElementById('entry-bar').onsubmit = function(){
     document.getElementById('send-btn').click();
     return false;
 };
+
 document.getElementById('user-input').addEventListener('keydown', function(e){
-    if(e.key === "Enter"){document.getElementById('send-btn').click();}
+    if(e.key === "Enter"){
+        document.getElementById('send-btn').click();
+    }
 });
 
-// --- Initial Greeting ---
-appendBotMsg(`<span class="neon-red" style="font-size:1.15em;">Welcome to NCERT Class 10 Science Bot!</span><br>
-Type <b>manual</b> to see all command options.<br>
-Type your topic or question to get instant science answers.<br>
-(Theme: Black & Neon Red, Answers: Typing green)<br>`);
+// Initial greeting
+appendBotMsg(`<div class="glow-text" style="font-size:1.2em;margin-bottom:10px;">🎓 Welcome to NCERT Class 10 Science Bot!</div>
+<div style="line-height:1.8;">
+I'm your friendly AI tutor with a sense of humor! 😄<br><br>
+✨ <b>Quick Start:</b><br>
+• Type any topic: "decomposition", "electricity", "photosynthesis"<br>
+• Get formulas: "formula of electricity"<br>
+• Practice: Type <b>"mcq"</b> for single questions or <b>"test"</b> for full exam!<br>
+• Need help? Type <b>"manual"</b><br><br>
+Let's ace that Science exam! 💪🔬
+</div>`);
     </script>
 </body>
 </html>

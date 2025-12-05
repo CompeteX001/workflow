@@ -210,7 +210,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>NCERT Class 10 Science AI</h1>1>
+        <h1>NCERT Class 10 Science AI</h1>
         <div id="chat-window"></div>
     </div>
     <form id="entry-bar" autocomplete="off" onsubmit="return false;">
@@ -386,7 +386,12 @@
             "aerobic respiration": "Uses oxygen; complete breakdown producing CO₂, H₂O, energy.",
             "anaerobic respiration": "Without oxygen; partial breakdown producing ethanol/CO₂/energy.",
             "transportation": "Movement of substances within an organism.",
-            "excretion": "Removal of metabolic waste products."
+            "excretion": "Removal of metabolic waste products.",
+            "photosynthesis": "Process by which green plants make food using sunlight, water, and carbon dioxide.",
+            "stomata": "Tiny pores on leaf surface for gas exchange.",
+            "chlorophyll": "Green pigment in plants that captures light energy for photosynthesis.",
+            "digestion": "Breaking down of complex food into simpler substances.",
+            "enzyme": "Biological catalyst that speeds up chemical reactions in living organisms."
         },
         formulas: [],
         equations: [
@@ -474,9 +479,15 @@
         definitions: {
             "reflection": "Bouncing back of light from a surface.",
             "refraction": "Bending of light as it passes from one medium to another.",
+            "light": "Electromagnetic radiation that is visible to the human eye.",
             "mirror formula": "Formula relating object distance (u), image distance (v) and focal length (f): 1/f = 1/v + 1/u.",
             "magnification": "Ratio of height of image to height of object: m = h'/h = v/u.",
-            "refractive index": "Ratio of speed of light in vacuum to speed in medium: n = c/v or n = sin i/sin r."
+            "refractive index": "Ratio of speed of light in vacuum to speed in medium: n = c/v or n = sin i/sin r.",
+            "lens": "Transparent material with curved surfaces that refracts light.",
+            "concave mirror": "Mirror with reflecting surface curved inward.",
+            "convex mirror": "Mirror with reflecting surface curved outward.",
+            "focal length": "Distance between pole and focus of a mirror or lens.",
+            "image": "Reproduction of an object formed by reflection or refraction of light."
         },
         formulas: [
             "Mirror/Lens: 1/f = 1/v + 1/u",
@@ -523,11 +534,19 @@
             "electric current": "Rate of flow of electric charge: I = Q/t.",
             "potential difference": "Work done per unit charge: V = W/Q.",
             "resistance": "Opposition to current flow.",
+            "electricity": "Form of energy resulting from the flow of electric charge.",
+            "current": "Rate of flow of electric charge measured in amperes.",
+            "voltage": "Electric potential difference between two points.",
             "ohm's law": "V = IR; voltage is proportional to current.",
             "power": "Rate of doing work: P = VI.",
             "energy": "Total work done: E = P × t.",
             "series combination": "Resistors joined end-to-end; Rtotal = R1+R2+...",
-            "parallel combination": "Resistors connected side by side; 1/Rtotal = 1/R1 + 1/R2 + ..."
+            "parallel combination": "Resistors connected side by side; 1/Rtotal = 1/R1 + 1/R2 + ...",
+            "conductor": "Material that allows electric current to flow easily.",
+            "insulator": "Material that does not allow electric current to flow easily.",
+            "circuit": "Closed path through which electric current flows.",
+            "ammeter": "Device used to measure electric current in a circuit.",
+            "voltmeter": "Device used to measure potential difference across a component."
         },
         formulas: [
             "Ohm's Law: V = IR",
@@ -720,9 +739,11 @@ let currentMCQIndex = 0;
 let mcqScore = 0;
 let mcqTotal = 0;
 let inMCQMode = false;
+let lastTopic = null;
+let lastChapter = null;
 
-const manualText = `<span style="color:#ff1654;font-weight:600;text-shadow:1px 0px 8px rgba(255, 22, 84, 0.5);">NCERT Science Bot – Command Manual</span>
-<ul style="line-height:1.8;">
+const manualText = `<span style="color:#667eea;font-weight:600;">📚 NCERT Science Bot – Command Manual</span>
+<ul style="line-height:1.9;">
 <li><b>question</b> - Get 10 random exam-style questions from entire syllabus</li>
 <li><b>test</b> - Start full test mode with 10 MCQs + 10 written questions with scoring</li>
 <li><b>mcq</b> - Practice single MCQ questions one by one</li>
@@ -735,7 +756,7 @@ const manualText = `<span style="color:#ff1654;font-weight:600;text-shadow:1px 0
 <li><b>example [topic]</b> - Get solved examples for the topic</li>
 <li><b>manual</b> or <b>help</b> - Show this command list</li>
 </ul>
-<div style="margin-top:10px;padding:8px;background:rgba(46,204,113,0.1);border-left:3px solid #2ecc71;border-radius:4px;">
+<div class="info-box" style="margin-top:12px;">
 <b>💡 Pro Tip:</b> Just type keywords! For example: "decomposition", "baking soda", "electricity formula", "test photosynthesis" - I'm smart enough to understand! 😎
 </div>`;
 
@@ -794,15 +815,21 @@ function findBestTopicMatch(query) {
     let highestScore = 0;
     
     // Remove common words that shouldn't trigger matches
-    const commonWords = ['hi', 'hello', 'hey', 'what', 'is', 'the', 'a', 'an', 'how', 'why', 'when', 'where'];
-    if(commonWords.includes(query)) {
+    const commonWords = ['hi', 'hello', 'hey', 'what', 'is', 'the', 'a', 'an', 'how', 'why', 'when', 'where', 'are', 'i', 'you', 'can', 'please', 'tell', 'me', 'about'];
+    const queryWords = query.split(/\s+/).filter(w => !commonWords.includes(w) && w.length > 2);
+    
+    // If only common words, return null
+    if(queryWords.length === 0) {
         return null;
     }
+    
+    // Rebuild query without common words
+    const cleanQuery = queryWords.join(' ');
 
     for(const chap in data) {
         for(const key in data[chap].definitions) {
             const keyLower = key.toLowerCase();
-            const similarity = calculateSimilarity(query, keyLower);
+            const similarity = calculateSimilarity(cleanQuery, keyLower);
             if(similarity > highestScore) {
                 highestScore = similarity;
                 bestMatch = key;
@@ -811,8 +838,8 @@ function findBestTopicMatch(query) {
         }
     }
     
-    // Require much higher threshold for match
-    return highestScore > 0.6 ? {match: bestMatch, chapter: bestChapter, score: highestScore} : null;
+    // Lower threshold since we cleaned the query
+    return highestScore > 0.5 ? {match: bestMatch, chapter: bestChapter, score: highestScore} : null;
 }
 
 function calculateSimilarity(str1, str2) {
@@ -961,16 +988,18 @@ async function processInput(msg) {
     }
 
     // Command: Definition [topic]
-    if (msgL.startsWith("definition")) {
-        let key = msgRaw.substr(10).trim();
+    if (msgL.startsWith("definition") || msgL.startsWith("what is") || msgL.startsWith("what are") || msgL.startsWith("define")) {
+        let key = msgRaw.replace(/^(definition|what is|what are|define)\s*/i, '').trim();
         let foundDef = null;
         let foundKey = null;
+        let foundChap = null;
         
         for(const chap in data) {
             let result = objectFind(data[chap].definitions || {}, key);
             if(result) {
                 foundDef = result.value;
                 foundKey = result.key;
+                foundChap = chap;
                 break;
             }
         }
@@ -978,22 +1007,40 @@ async function processInput(msg) {
         if(!foundDef) {
             let bestMatch = findBestTopicMatch(key);
             if(bestMatch) {
-                reply = `🤔 Did you mean <b>"${bestMatch.match}"</b>?<br><br>`;
-                reply += `<b>Definition:</b> ${data[bestMatch.chapter].definitions[bestMatch.match]}`;
+                reply = `<div class="glow-text">🤔 Did you mean <b>"${bestMatch.match}"</b>?</div><br>`;
+                reply += `<div class="success-box"><b>📖 Definition:</b> ${data[bestMatch.chapter].definitions[bestMatch.match]}</div>`;
+                reply += `<div class="info-box" style="font-size:0.92em;"><b>📚 From Chapter:</b> ${bestMatch.chapter}</div>`;
+                lastTopic = bestMatch.match;
+                lastChapter = bestMatch.chapter;
             } else {
-                reply = "😕 Couldn't find that definition. Try using keywords like 'acid', 'photosynthesis', 'reflection', etc.";
+                reply = "😕 Hmm, I couldn't find that definition. Try using keywords like 'acid', 'photosynthesis', 'reflection', 'current', etc. Or just type the topic directly!";
             }
         } else {
-            reply = `<div class="glow-text"><b>Definition of ${foundKey}:</b></div><br>${foundDef}`;
+            reply = `<div class="glow-text"><b>📖 Definition of "${foundKey}":</b></div><br>`;
+            reply += `<div class="success-box">${foundDef}</div>`;
+            reply += `<div class="info-box" style="font-size:0.92em;"><b>📚 From Chapter:</b> ${foundChap}</div>`;
+            lastTopic = foundKey;
+            lastChapter = foundChap;
         }
         
         appendBotMsg(reply);
         return;
     }
 
-    // Command: Formula of [chapter/topic]
-    if (msgL.startsWith("formula of") || msgL.startsWith("formulas of")) {
-        let key = msgRaw.replace(/^formulas? of /i, '').trim();
+    // Command: Formula of [chapter/topic] OR just "formula" (use context)
+    if (msgL.startsWith("formula of") || msgL.startsWith("formulas of") || msgL === "formula" || msgL === "formulas") {
+        let key = msgL === "formula" || msgL === "formulas" ? "" : msgRaw.replace(/^formulas? of /i, '').trim();
+        
+        // If just "formula" and we have context, use last topic
+        if(!key && lastChapter) {
+            key = lastChapter;
+            reply = `<div class="glow-text">📝 Here are the formulas related to <b>"${lastTopic}"</b>:</div><br>`;
+        } else if(!key) {
+            reply = "Please specify what formulas you need! For example: 'formula of electricity' or ask about a topic first, then type 'formula'.";
+            appendBotMsg(reply);
+            return;
+        }
+        
         let chap = chapterFind(key);
         
         if(chap) {
@@ -1009,7 +1056,7 @@ async function processInput(msg) {
                     reply += "</ul>";
                 }
             } else {
-                reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">🧮 Formulas from <b>${chap}</b>:</div>`;
+                if(!reply) reply = `<div class="glow-text" style="font-size:1.15em;margin-bottom:12px;">🧮 Formulas from <b>${chap}</b>:</div>`;
                 
                 if(forms.length) {
                     reply += "<div style='margin:10px 0;'><b>Formulas:</b><ul>";
@@ -1089,9 +1136,19 @@ async function processInput(msg) {
         return;
     }
 
-    // Command: Example [topic]
-    if(msgL.startsWith("example")) {
-        let key = msgRaw.substr(7).trim();
+    // Command: Example [topic] OR just "example" (use context)
+    if(msgL.startsWith("example") || msgL === "example" || msgL === "examples") {
+        let key = msgL === "example" || msgL === "examples" ? "" : msgRaw.substr(7).trim();
+        
+        // If just "example" and we have context, use last topic
+        if(!key && lastTopic) {
+            key = lastTopic;
+        } else if(!key) {
+            reply = "Please specify what examples you need! For example: 'example decomposition' or ask about a topic first, then type 'example'.";
+            appendBotMsg(reply);
+            return;
+        }
+        
         let found = [];
         
         for(const chap in data) {
@@ -1103,7 +1160,7 @@ async function processInput(msg) {
         
         if(!found.length) reply = "🔍 No specific examples found for that topic. Try being more specific!";
         else {
-            reply = `<div class="glow-text"><b>Examples for '${key}':</b></div><ul style="line-height:1.8;">`;
+            reply = `<div class="glow-text"><b>💡 Examples for '${key}':</b></div><ul style="line-height:1.8;">`;
             for(const ex of found) reply += `<li>${ex}</li>`;
             reply += "</ul>";
         }
@@ -1115,15 +1172,28 @@ async function processInput(msg) {
     // General topic search (smart matching)
     
     // Handle greetings and casual messages
-    const greetings = ['hi', 'hello', 'hey', 'sup', 'yo', 'greetings'];
-    if(greetings.includes(msgL)) {
+    const greetings = ['hi', 'hello', 'hey', 'sup', 'yo', 'greetings', 'good morning', 'good evening', 'good afternoon'];
+    if(greetings.some(g => msgL === g || msgL.startsWith(g + ' '))) {
         const greetResponses = [
-            "Hey there! 👋 Ready to master some science? Try typing a topic like 'photosynthesis' or 'electricity'!",
-            "Hello! 🔬 I'm here to help you ace Class 10 Science. What topic shall we explore?",
-            "Hi! 😊 Type any science topic or 'manual' to see what I can do!",
-            "Greetings, future scientist! 🧪 What would you like to learn today?"
+            "Hey there! 👋 Ready to master some science? Try asking me about any topic like 'what is electricity' or 'photosynthesis'!",
+            "Hello! 🔬 I'm your science tutor. Ask me anything - 'what is photosynthesis?', 'explain electricity', or just type 'decomposition'!",
+            "Hi! 😊 Type any science question like 'what is electricity' or just topics like 'photosynthesis', 'acids', 'light'!",
+            "Greetings, future scientist! 🧪 Ask me about any Class 10 Science topic! Try 'what is respiration' or 'electricity'."
         ];
         reply = greetResponses[Math.floor(Math.random() * greetResponses.length)];
+        appendBotMsg(reply);
+        return;
+    }
+    
+    // Check for conversational patterns
+    if(msgL.includes('thank') || msgL.includes('thanks')) {
+        reply = "You're welcome! 😊 Keep learning and feel free to ask more questions anytime!";
+        appendBotMsg(reply);
+        return;
+    }
+    
+    if(msgL.includes('who are you') || msgL.includes('what are you')) {
+        reply = "I'm your NCERT Class 10 Science AI Tutor! 🤖 I can help you with definitions, formulas, examples, and practice tests. Ask me about any science topic!";
         appendBotMsg(reply);
         return;
     }
@@ -1134,11 +1204,15 @@ async function processInput(msg) {
         let chap = bestMatch.chapter;
         let topic = bestMatch.match;
         
+        // Store context
+        lastTopic = topic;
+        lastChapter = chap;
+        
         reply = `<div class="glow-text">💡 Oh, you mean <b>"${topic}"</b>! Here's everything about it:</div><br>`;
         
         // Definition
         if(data[chap].definitions[topic]) {
-            reply += `<div style="margin:12px 0;padding:12px;background:rgba(46,204,113,0.08);border-left:3px solid #2ecc71;border-radius:4px;">`;
+            reply += `<div class="success-box">`;
             reply += `<b>📖 Definition:</b> ${data[chap].definitions[topic]}</div>`;
         }
         
@@ -1150,7 +1224,7 @@ async function processInput(msg) {
             );
         }
         if(relatedFormulas.length) {
-            reply += `<div style="margin:12px 0;"><b>🧮 Related Formulas:</b><ul>`;
+            reply += `<div style="margin:14px 0;"><b>🧮 Related Formulas:</b><ul>`;
             relatedFormulas.forEach(f => reply += `<li>${f}</li>`);
             reply += `</ul></div>`;
         }
@@ -1163,7 +1237,7 @@ async function processInput(msg) {
             );
         }
         if(relatedExamples.length) {
-            reply += `<div style="margin:12px 0;"><b>💡 Examples:</b><ul>`;
+            reply += `<div style="margin:14px 0;"><b>💡 Examples:</b><ul>`;
             relatedExamples.forEach(ex => reply += `<li>${ex}</li>`);
             reply += `</ul></div>`;
         }
@@ -1176,15 +1250,20 @@ async function processInput(msg) {
             );
         }
         if(relatedPoints.length) {
-            reply += `<div style="margin:12px 0;"><b>🎯 Key Points:</b><ul>`;
+            reply += `<div style="margin:14px 0;"><b>🎯 Key Points:</b><ul>`;
             relatedPoints.forEach(p => reply += `<li>${p}</li>`);
             reply += `</ul></div>`;
         }
         
-        reply += `<div style="margin-top:15px;padding:10px;background:rgba(255,22,84,0.08);border-radius:4px;font-size:0.95em;">`;
-        reply += `<b>From Chapter:</b> ${chap}</div>`;
+        reply += `<div class="info-box" style="font-size:0.92em;">`;
+        reply += `<b>📚 From Chapter:</b> ${chap}<br>`;
+        reply += `<i>💬 You can now ask 'formula', 'example', or 'summary' for more info!</i></div>`;
         
     } else {
+        // Reset context if no match
+        lastTopic = null;
+        lastChapter = null;
+        
         reply = "🤔 Hmm, I couldn't quite understand that. Try:<br>";
         reply += "• Typing a clear keyword like 'decomposition', 'electricity', 'photosynthesis'<br>";
         reply += "• Using commands like 'formula of electricity' or 'types of reaction'<br>";

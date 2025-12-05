@@ -1,185 +1,984 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Class 10 Science ChatBot</title>
-  <style>
-    body { background: #000; color: #fff; font-family: Arial; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-    #chatbox { width: 100%; max-width: 900px; height: 550px; background: #111; border: 2px solid #f00; padding: 10px; overflow-y: auto; box-shadow: 0 0 20px red; margin-bottom: 10px; }
-    .user { color: #0af; margin: 6px 0; }
-    .bot { color: #0f5; margin: 6px 0; }
-    input { width: 70%; padding: 10px; border: none; outline: none; background: #222; color: #fff; box-shadow: 0 0 10px red; }
-    button { padding: 10px 20px; margin-left: 5px; background: #f00; border: none; color: #fff; cursor: pointer; box-shadow: 0 0 15px red; }
-    .topic-title { color: #f70; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <title>NCERT Class 10 Science AI Chatbot</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto 0 auto;
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 0 30px 10px #d10646, 0 0 1px 1px #313131;
+            padding: 24px 18px 60px 18px;
+        }
+        h1 {
+            color: #d10646;
+            font-size: 2.3em;
+            text-align: center;
+            text-shadow: 0px 0px 17px #fd004c;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        #chat-window {
+            background: rgba(25, 25, 25, 0.85);
+            border-radius: 10px;
+            min-height: 350px;
+            max-height: 46vh;
+            overflow-y: auto;
+            box-shadow: 0 0 14px 1px #d10646;
+            padding: 14px 10px;
+            margin-bottom: 20px;
+            word-break: break-word;
+            font-size: 1.05em;
+        }
+        .user-msg {
+            color: #ff4747;
+            font-weight: bold;
+            margin-bottom: 0.4em;
+        }
+        .bot-msg {
+            color: #29e91a;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 1.1em;
+            font-size: 1.1em;
+            border-left: 3px solid #29e91a;
+            padding-left: 10px;
+            text-shadow: 0px 0px 8px #47ff5a;
+            min-width: 90%;
+            letter-spacing: 0.6px;
+        }
+        #entry-bar {
+            width: 100%;
+            display: flex;
+            gap: 0.7em;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            background: #09090a;
+            padding: 16px 14px;
+            box-shadow: 0 -3px 24px #d10646;
+            border-top: 1px solid #d10646;
+            z-index: 82;
+        }
+        #user-input {
+            flex: 1;
+            border-radius: 7px;
+            background: #131316;
+            color: #fff;
+            font-size: 1.09em;
+            padding: 13px 11px;
+            border: none;
+            outline: none;
+            box-shadow: 0px 0px 10px #fd004c7a inset;
+            font-family: inherit;
+        }
+        #send-btn {
+            background: #ff005c;
+            color: #fff;
+            font-size: 1.16em;
+            border-radius: 7px;
+            border: none;
+            box-shadow: 0px 0px 14px #fd004c inset, 0 0 4px #fd004c99;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 12px 23px;
+            cursor: pointer;
+            transition: background 0.15s;
+            text-shadow: 0 0 14px #ff0066;
+        }
+        #send-btn:hover {
+            background: #d10646;
+        }
+        @media (max-width: 600px) {
+            .container{max-width:96vw;padding:10px 2vw 100px 2vw;}
+            #chat-window{font-size:0.97em;}
+            #entry-bar{padding:12px 3vw;}
+        }
+        ::selection {
+            background: #fd004c85;
+            color: #fff;
+        }
+        /* Neon Animation */
+        .neon-red {
+            animation: neonredglow 1.6s infinite alternate;
+        }
+        @keyframes neonredglow {
+            from {text-shadow: 0 0 24px #fd004c, 0 0 3px #ff718e;}
+            to {text-shadow: 0 0 44px #fd004c, 0 0 7px #d10646;}
+        }
+        .bot-msg.typing {
+            border-left: 3px solid #103d05!important;
+            color: #16b206!important;
+            text-shadow: none;
+        }
+    </style>
 </head>
 <body>
-
-<h1>NCERT Class 10 Science ChatBot</h1>
-<div id="chatbox">
-  <p class="bot"><b>Bot:</b> Hi! Ask me definitions, formulas, reactions, or important questions from Class 10 Science.</p>
-</div>
-
-<input type="text" id="userInput" placeholder="Type your question...">
-<button onclick="sendMessage()">Ask</button>
-
-<script>
-const knowledge = {
-  "Chapter 1": {
-    "chemical reaction": { definition: "A process in which substances react to form new substances with different properties.", points:["Law of conservation of mass","Reactants → Products"], formulas:["2H2 + O2 → 2H2O"], example:"Rusting of iron" },
-    "combination reaction": { definition:"Two or more reactants combine to form one product.", formulas:["A + B → AB"], example:"2Mg + O2 → 2MgO" },
-    "decomposition reaction": { definition:"Compound breaks into simpler substances.", formulas:["AB → A + B"], example:"2KClO3 → 2KCl + 3O2" },
-    "displacement reaction": { definition:"More reactive element displaces less reactive element from its compound.", formulas:["Zn + CuSO4 → ZnSO4 + Cu"], example:"Zinc displacing copper" },
-    "double displacement": { definition:"Exchange of ions between two compounds.", formulas:["AgNO3 + NaCl → AgCl + NaNO3"], example:"Precipitation reaction" },
-    "neutralization": { definition:"Acid + Base → Salt + Water", formulas:["HCl + NaOH → NaCl + H2O"], example:"Titration in lab" },
-    "oxidation": { definition:"Addition of oxygen or removal of hydrogen.", example:"2Mg + O2 → 2MgO" },
-    "reduction": { definition:"Removal of oxygen or addition of hydrogen.", example:"CuO + H2 → Cu + H2O" }
-  },
-  "Chapter 2": {
-    "acid": { definition:"Substance releasing H+ ions in water.", points:["Turns blue litmus red","pH < 7"], example:"HCl" },
-    "base": { definition:"Substance releasing OH- ions in water.", points:["Turns red litmus blue","pH > 7"], example:"NaOH" },
-    "salt": { definition:"Compound formed from neutralization of acid & base.", example:"NaCl" },
-    "neutralization": { definition:"Acid + Base → Salt + Water", formulas:["HCl + NaOH → NaCl + H2O"] },
-    "pH": { definition:"Measure of hydrogen ion concentration", formulas:["pH = -log[H+]"], example:"pH of 0.01M HCl = 2" }
-  },
-  "Chapter 3": {
-    "metal": { definition:"Lustrous, malleable, ductile, good conductor.", example:"Magnesium" },
-    "non-metal": { definition:"Brittle, dull, poor conductor.", example:"Sulphur" },
-    "reactivity series": { definition:"Order of metals based on reactivity.", example:"K > Na > Ca > Mg > Al > Zn > Fe > Cu" },
-    "alloy": { definition:"Homogeneous mixture of metals or metal + non-metal.", example:"Brass = Cu + Zn" }
-  },
-  "Chapter 4": {
-    "hydrocarbon": { definition:"Compounds containing only C & H.", formulas:["C2H4 + H2 → C2H6 (addition)"], example:"Methane, Ethene" },
-    "alcohol": { definition:"Organic compound containing -OH group.", example:"Ethanol" },
-    "acid": { definition:"Organic acids contain -COOH group.", example:"Ethanoic acid" },
-    "ester": { definition:"Reaction of alcohol + acid → ester + water", formulas:["CH3COOH + C2H5OH → CH3COOC2H5 + H2O"], example:"Ethyl acetate" },
-    "soap": { definition:"Sodium/potassium salts of fatty acids used for cleaning", example:"Soap making from fats" }
-  },
-  "Chapter 5": {
-    "periodic table": { definition:"Arrangement of elements by increasing atomic number.", points:["Groups = vertical","Periods = horizontal"], example:"Modern periodic table" },
-    "valency": { definition:"Combining capacity of an element", example:"H=1, O=2" }
-  },
-  "Chapter 6": {
-    "photosynthesis": { definition:"Plants make food using sunlight, CO2 & H2O", formulas:["6CO2 + 6H2O → C6H12O6 + 6O2"] },
-    "respiration": { definition:"Breakdown of food to release energy", formulas:["C6H12O6 + 6O2 → 6CO2 + 6H2O + energy"] },
-    "transportation": { definition:"Movement of substances in plants/animals" }
-  },
-  "Chapter 7": {
-    "nervous system": { definition:"Coordination via neurons and brain/spinal cord", points:["Reflex arc","Stimulus-response"] },
-    "endocrine system": { definition:"Hormones control body functions", example:"Insulin regulates glucose" }
-  },
-  "Chapter 8": {
-    "asexual reproduction": { definition:"Reproduction without gametes", points:["Binary fission","Budding","Fragmentation"] },
-    "sexual reproduction": { definition:"Fusion of male and female gametes", points:["Pollination","Fertilization","Seed formation"] }
-  },
-  "Chapter 9": {
-    "heredity": { definition:"Passing traits from parents to offspring", points:["Genes, chromosomes","Mendelian inheritance"] },
-    "evolution": { definition:"Gradual change in species over generations", points:["Natural selection","Speciation","Adaptations"] }
-  },
-  "Chapter 10": {
-    "reflection": { definition:"Bouncing back of light", formulas:["Angle of incidence = Angle of reflection"] },
-    "refraction": { definition:"Bending of light at boundary", formulas:["n = sin i / sin r"] },
-    "lens formula": { formulas:["1/f = 1/v - 1/u"], example:"f = focal length, v = image distance, u = object distance" },
-    "mirror formula": { formulas:["1/f = 1/v + 1/u"], example:"f = focal length, v = image distance, u = object distance" }
-  },
-  "Chapter 11": {
-    "human eye": { definition:"Eye structure and working", points:["Defects: myopia, hypermetropia","Correction with lenses"] },
-    "dispersion": { definition:"Splitting white light into colors" },
-    "scattering": { definition:"Deviation of light due to particles (blue sky)" }
-  },
-  "Chapter 12": {
-    "ohm's law": { definition:"V ∝ I at constant R", formulas:["V = IR"] },
-    "power": { definition:"Electric power formulas", formulas:["P = VI","P = I^2 R","P = V^2 / R"] },
-    "joule heating": { definition:"Heating effect of current", formulas:["H = I^2 R t"] },
-    "series resistance": { formulas:["R_total = R1 + R2 + R3 + ..."] },
-    "parallel resistance": { formulas:["1/R_total = 1/R1 + 1/R2 + 1/R3 + ..."] }
-  },
-  "Chapter 13": {
-    "magnetic field": { definition:"Field around current-carrying conductor", formulas:["B = μ0 I / 2πr (straight wire)","F = BIL sinθ"] },
-    "right-hand rule": { definition:"Direction of magnetic field using right hand" },
-    "electromagnet": { definition:"Magnet created by current through a coil" }
-  },
-  "Chapter 14": {
-    "renewable energy": { definition:"Energy replenished naturally", points:["Solar","Wind","Hydro"] },
-    "non-renewable energy": { definition:"Fossil fuels, coal, petroleum" }
-  },
-  "Chapter 15": {
-    "ecosystem": { definition:"Community of organisms + environment", points:["Producers, Consumers, Decomposers","Food chains/webs","Pollution"] }
-  },
-  "Chapter 16": {
-    "sustainable development": { definition:"Using resources without harming future generations", points:["Forest/wildlife conservation","Water harvesting","Responsible human-environment interaction"] }
-  }
+    <div class="container">
+        <h1 class="neon-red">NCERT 10 Science AI</h1>
+        <div id="chat-window"></div>
+    </div>
+    <form id="entry-bar" autocomplete="off" onsubmit="return false;">
+        <input id="user-input" type="text" autocomplete="off" placeholder="Type your science question or command here..." autofocus>
+        <button id="send-btn" type="submit">ASK</button>
+    </form>
+    <script>
+        // -- Data Section --
+        const data = {
+    "Chapter 1: Chemical Reactions and Equations": {
+        definitions: {
+            "chemical reaction": "A process in which one or more substances (reactants) are converted into one or more different substances (products).",
+            "chemical equation": "A symbolic representation of a chemical reaction showing reactants and products.",
+            "balanced chemical equation": "An equation in which the number of atoms of each element is equal on both sides, obeying the law of conservation of mass.",
+            "oxidation": "Loss of electrons; gain of oxygen or loss of hydrogen.",
+            "reduction": "Gain of electrons; loss of oxygen or gain of hydrogen.",
+            "corrosion": "Gradual destruction of metals by chemical reaction with environment, e.g., rusting.",
+            "rancidity": "Spoilage of food containing fats/oils due to oxidation, causing bad taste and smell.",
+            "combination reaction": "Two or more reactants combine to form one product: A + B → AB.",
+            "decomposition reaction": "A single compound breaks down into two or more simpler substances: AB → A + B.",
+            "displacement reaction": "A more reactive element displaces a less reactive one from its compound: A + BC → AC + B.",
+            "double displacement reaction": "Exchange of ions between two compounds: AB + CD → AD + CB.",
+            "redox reaction": "A reaction in which both oxidation and reduction occurs simultaneously."
+        },
+        formulas: [],
+        equations: [
+            "A + B → AB (Combination)",
+            "AB → A + B (Decomposition)",
+            "A + BC → AC + B (Displacement)",
+            "AB + CD → AD + CB (Double Displacement)",
+            "Fe + O₂ + H₂O → Fe₂O₃·xH₂O (Rusting)"
+        ],
+        typesOfReaction: [
+            {type: "Combination", def: "Two or more reactants combine to form one product: A + B → AB."},
+            {type: "Decomposition", def: "A single compound breaks down into two or more simpler substances: AB → A + B (Thermal/Electrolytic/Photo)."},
+            {type: "Displacement", def: "A more reactive element displaces a less reactive one from its compound: A + BC → AC + B."},
+            {type: "Double Displacement", def: "Exchange of ions between two compounds: AB + CD → AD + CB."},
+            {type: "Redox", def: "A reaction in which both oxidation and reduction occurs simultaneously."}
+        ],
+        examples: [
+            "Heating calcium carbonate: CaCO₃ → CaO + CO₂ (Decomposition)",
+            "Iron rusting: Fe + O₂ + H₂O → Fe₂O₃·xH₂O (Combination/Redox)",
+            "Zinc with copper sulphate: Zn + CuSO₄ → ZnSO₄ + Cu (Displacement)"
+        ],
+        points: [
+            "Chemical changes involve change in state, colour, temperature, or evolution of gas.",
+            "Chemical equations must be balanced to obey the law of conservation of mass.",
+            "Redox reactions involve simultaneous oxidation and reduction."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 2: Acids, Bases and Salts": {
+        definitions: {
+            "acid": "A substance that releases H⁺ ions in aqueous solution.",
+            "base": "A substance that releases OH⁻ ions in aqueous solution.",
+            "indicator": "A substance that indicates acidity/basicity by change in colour.",
+            "pH": "A measure of hydrogen ion concentration. Lower pH = more acidic. Formula: pH = –log[H⁺].",
+            "neutralization": "Reaction between acid and base to give salt and water: NaOH + HCl → NaCl + H₂O.",
+            "salt": "Product of reaction of an acid and a base.",
+            "rancidity": "Spoilage of food containing fats/oils due to oxidation.",
+            "common salt": "Sodium chloride; NaCl.",
+            "baking soda": "Sodium bicarbonate; NaHCO₃.",
+            "washing soda": "Sodium carbonate; Na₂CO₃·10H₂O.",
+            "bleaching powder": "Calcium oxychloride; CaOCl₂.",
+            "plaster of Paris": "CaSO₄·½H₂O; a hemihydrate of calcium sulfate."
+        },
+        formulas: [
+            "pH = –log[H⁺]"
+        ],
+        equations: [
+            "NaOH + HCl → NaCl + H₂O (Neutralization)",
+            "Zn + H₂SO₄ → ZnSO₄ + H₂↑",
+            "CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂",
+            "NaCl + H₂O + CO₂ + NH₃ → NaHCO₃ + NH₄Cl (Baking Soda Preparation)",
+            "Ca(OH)₂ + Cl₂ → CaOCl₂ + H₂O (Bleaching Powder)",
+            "2CaSO₄·2H₂O → 2CaSO₄·½H₂O + 3H₂O (Plaster of Paris)"
+        ],
+        examples: [
+            "Litmus colour change in acids and bases.",
+            "NaOH + HCl gives table salt and water.",
+            "Baking soda is used as antacid."
+        ],
+        points: [
+            "Acids turn blue litmus red; bases turn red litmus blue.",
+            "The neutralization of acids and bases forms salt and water.",
+            "pH of body fluids is important for health."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 3: Metals and Non-metals": {
+        definitions: {
+            "metal": "An element that is typically hard, shiny, malleable, ductile, and conducts electricity and heat.",
+            "non-metal": "An element that is brittle, dull, and a poor conductor of heat and electricity.",
+            "reactivity series": "A list of metals ranked by reactivity.",
+            "ionic bond": "Electrostatic force of attraction between oppositely charged ions.",
+            "corrosion": "Slow conversion of metals into undesirable compounds due to environmental effects.",
+            "ore": "Naturally occurring mineral from which metals can be extracted."
+        },
+        formulas: [],
+        equations: [
+            "2Mg + O₂ → 2MgO",
+            "2Na + 2H₂O → 2NaOH + H₂↑",
+            "Zn + 2HCl → ZnCl₂ + H₂↑",
+            "Fe + O₂ + H₂O → Fe₂O₃·xH₂O (Rusting)"
+        ],
+        examples: [
+            "Aluminium extraction from bauxite ore.",
+            "Reaction of iron with water and air causes rusting."
+        ],
+        points: [
+            "Metals are malleable and ductile; non-metals are not.",
+            "Corrosion decreases the useful life of metals.",
+            "Non-metals generally form covalent bonds."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 4: Carbon and its Compounds": {
+        definitions: {
+            "covalent bond": "A chemical bond formed by the sharing of electron pairs between atoms.",
+            "hydrocarbon": "Organic compound consisting entirely of hydrogen and carbon.",
+            "saturated hydrocarbon": "Hydrocarbons with single bonds (alkanes).",
+            "unsaturated hydrocarbon": "Hydrocarbons with double or triple bonds (alkenes, alkynes).",
+            "functional group": "A group of atoms responsible for characteristic reactions of a compound.",
+            "isomerism": "Phenomenon where compounds have same molecular formula but different structures.",
+            "homologous series": "Family of organic compounds differing by single -CH₂- units."
+        },
+        formulas: [],
+        equations: [
+            "Combustion: CH₄ + 2O₂ → CO₂ + 2H₂O",
+            "Oxidation: CH₃CH₂OH + [O] → CH₃COOH + H₂O",
+            "Addition: C₂H₄ + H₂ → C₂H₆",
+            "Substitution: CH₄ + Cl₂ → CH₃Cl + HCl",
+            "2C₂H₅OH + 2Na → 2C₂H₅ONa + H₂",
+            "C₂H₅OH + CH₃COOH → CH₃COOC₂H₅ + H₂O (Esterification)",
+            "CH₃COOH + NaOH → CH₃COONa + H₂O"
+        ],
+        examples: [
+            "Soap formation from fats and NaOH.",
+            "Esterification: Ethanol + Ethanoic acid = Ester.",
+            "Unsaturated compounds decolorize bromine water."
+        ],
+        points: [
+            "Carbon forms strong covalent bonds and long chains.",
+            "Saturated hydrocarbons are less reactive than unsaturated.",
+            "Functional groups determine chemical properties."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 5: Periodic Classification of Elements": {
+        definitions: {
+            "periodic table": "Arrangement of elements in order of increasing atomic number.",
+            "group": "A vertical column in the periodic table.",
+            "period": "A horizontal row in the periodic table.",
+            "valency": "Combining capacity of an atom.",
+            "atomic size": "Distance from nucleus to outermost shell.",
+            "metallic character": "Tendency to lose electrons.",
+            "non-metallic character": "Tendency to gain electrons."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Lithium, sodium, and potassium form Dobereiner's triad.",
+            "Newlands' law of octaves: Every eighth element has properties similar to the first."
+        ],
+        points: [
+            "Atomic size increases down a group, decreases across a period.",
+            "Valency is usually constant in a group.",
+            "Modern periodic law: Properties of elements are a periodic function of atomic number."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 6: Life Processes": {
+        definitions: {
+            "nutrition": "Process of obtaining and utilizing food.",
+            "autotrophic nutrition": "Food synthesized from simple substances (e.g., photosynthesis).",
+            "heterotrophic nutrition": "Organisms obtain food from others.",
+            "respiration": "Process of breakdown of food to release energy.",
+            "aerobic respiration": "Uses oxygen; complete breakdown producing CO₂, H₂O, energy.",
+            "anaerobic respiration": "Without oxygen; partial breakdown producing ethanol/CO₂/energy.",
+            "transportation": "Movement of substances within an organism.",
+            "excretion": "Removal of metabolic waste products."
+        },
+        formulas: [],
+        equations: [
+            "Aerobic: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + energy",
+            "Anaerobic: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + energy"
+        ],
+        examples: [
+            "Photosynthesis in plants.",
+            "Human digestive system involves mouth, stomach, intestines.",
+            "Nephrons are filtration units in kidney."
+        ],
+        points: [
+            "Plants use chlorophyll for photosynthesis.",
+            "Respiration releases energy required for life processes.",
+            "Transportation involves heart, blood vessels, xylem, and phloem."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 7: Control and Coordination": {
+        definitions: {
+            "control and coordination": "Processes that help maintain stability and responses in living beings.",
+            "neuron": "Nerve cell; structural and functional unit of nervous system.",
+            "reflex action": "Immediate, involuntary response to stimuli.",
+            "hormone": "Chemical substance regulating activities in the body.",
+            "tropism": "Directional growth response in plants."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Blinking of eyes is a reflex action.",
+            "Adrenaline hormone increases heart rate.",
+            "Phototropism: bending of plants towards light."
+        ],
+        points: [
+            "Brain controls voluntary actions.",
+            "Hormones regulate growth and metabolism.",
+            "Plants coordinate with hormones and growth movements."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 8: How do Organisms Reproduce?": {
+        definitions: {
+            "reproduction": "Biological process by which living organisms produce offspring.",
+            "asexual reproduction": "Single organism produces offspring identical to itself.",
+            "sexual reproduction": "Fusion of male and female gametes.",
+            "vegetative propagation": "New plants from stems, roots, or leaves.",
+            "pollination": "Transfer of pollen from anther to stigma.",
+            "fertilization": "Fusion of male and female gametes."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Yeast undergoes budding (asexual reproduction).",
+            "Sexual reproduction in humans involves sperm and egg.",
+            "Potato tubers produce new plants by vegetative propagation."
+        ],
+        points: [
+            "Asexual reproduction yields genetically identical offspring.",
+            "Sexual reproduction increases genetic variation.",
+            "Pollination is crucial for seed formation in plants."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 9: Heredity and Evolution": {
+        definitions: {
+            "heredity": "Transmission of traits from parents to offspring.",
+            "gene": "Unit of inheritance.",
+            "chromosome": "Thread-like structure carrying genes.",
+            "dominant trait": "Trait expressed when present.",
+            "recessive trait": "Trait masked by dominant trait.",
+            "evolution": "Gradual development of organisms since ancient forms.",
+            "speciation": "Formation of new species."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Mendel's pea plant experiments.",
+            "Sex determination by XX/XY chromosomes.",
+            "Darwin's theory of evolution by natural selection."
+        ],
+        points: [
+            "Genes control traits.",
+            "Sex chromosomes determine gender.",
+            "Fossils and homologous organs are evidence of evolution."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 10: Light – Reflection and Refraction": {
+        definitions: {
+            "reflection": "Bouncing back of light from a surface.",
+            "refraction": "Bending of light as it passes from one medium to another.",
+            "mirror formula": "Formula relating object distance (u), image distance (v) and focal length (f): 1/f = 1/v + 1/u.",
+            "magnification": "Ratio of height of image to height of object: m = h'/h = v/u.",
+            "refractive index": "Ratio of speed of light in vacuum to speed in medium: n = c/v or n = sin i/sin r."
+        },
+        formulas: [
+            "Mirror/Lens: 1/f = 1/v + 1/u",
+            "Magnification: m = h'/h = v/u",
+            "Refractive Index: n = sin i/sin r; n = c/v"
+        ],
+        equations: [],
+        examples: [
+            "Concave mirrors form real and virtual images.",
+            "Bending of pencil in water is refraction.",
+            "Refraction causes objects to appear shifted."
+        ],
+        points: [
+            "Real image is formed where rays converge; virtual where they appear to diverge.",
+            "Speed of light changes in different media.",
+            "Two laws of reflection: i = r and incident, reflected rays and normal lie in same plane."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 11: The Human Eye and the Colourful World": {
+        definitions: {
+            "pupil": "Aperture in the center of iris; regulates light entry.",
+            "retina": "Light-sensitive layer at back of eye.",
+            "lens": "Transparent structure for focusing light.",
+            "myopia": "Short-sightedness; can see near objects clearly.",
+            "hypermetropia": "Long-sightedness; can see distant objects clearly.",
+            "dispersion": "Splitting of white light into colors.",
+            "atmospheric refraction": "Refraction of light by Earth's atmosphere.",
+            "scattering": "Spreading of light in all directions."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Rainbow formation due to dispersion.",
+            "Correction of myopia with concave lens."
+        ],
+        points: [
+            "Eye adjusts focal length using ciliary muscles.",
+            "Stars twinkle due to atmospheric refraction.",
+            "Sky appears blue due to scattering."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 12: Electricity": {
+        definitions: {
+            "electric current": "Rate of flow of electric charge: I = Q/t.",
+            "potential difference": "Work done per unit charge: V = W/Q.",
+            "resistance": "Opposition to current flow.",
+            "ohm's law": "V = IR; voltage is proportional to current.",
+            "power": "Rate of doing work: P = VI.",
+            "energy": "Total work done: E = P × t.",
+            "series combination": "Resistors joined end-to-end; Rtotal = R1+R2+...",
+            "parallel combination": "Resistors connected side by side; 1/Rtotal = 1/R1 + 1/R2 + ..."
+        },
+        formulas: [
+            "Ohm's Law: V = IR",
+            "Power: P = VI; P = I^2R; P = V^2/R",
+            "Energy: E = P × t (kWh)",
+            "Rseries = R1 + R2 + ...",
+            "1/Rparallel = 1/R1 + 1/R2 + ..."
+        ],
+        equations: [],
+        examples: [
+            "A 10V battery and 5Ω resistor: I = V/R = 10/5 = 2A.",
+            "Electric bulb converts electrical energy into light and heat."
+        ],
+        points: [
+            "SI unit of current is ampere (A).",
+            "High resistance reduces current.",
+            "Electric energy is measured in kilowatt hour (kWh)."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 13: Magnetic Effects of Electric Current": {
+        definitions: {
+            "magnetic field": "Region around a magnet where force is felt.",
+            "electromagnet": "Temporary magnet by current in coil.",
+            "electromagnetic induction": "Production of current by changing magnetic field.",
+            "fleming's left hand rule": "Gives direction of force, current, magnetic field.",
+            "right-hand thumb rule": "Direction of magnetic field around current wire."
+        },
+        formulas: [
+            "Force: F = BIL"
+        ],
+        equations: [],
+        examples: [
+            "Electric fan uses a motor (electromagnet).",
+            "Induced current in generator (electromagnetic induction)."
+        ],
+        points: [
+            "Magnetic field lines form closed loops.",
+            "Current-carrying wire produces magnetic field.",
+            "Thumb rule gives direction of field."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 14: Sources of Energy": {
+        definitions: {
+            "renewable energy": "Energy from sources that can be replenished.",
+            "non-renewable energy": "Energy from sources that are finite.",
+            "solar energy": "Energy from sun.",
+            "geothermal energy": "Energy from Earth's internal heat.",
+            "tidal energy": "Energy from tides in seas."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Solar panels convert sunlight to electricity.",
+            "Wind turbines generate electric power."
+        ],
+        points: [
+            "Renewable sources have less environmental impact.",
+            "Fossil fuels cause pollution.",
+            "Biogas is a clean energy source."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 15: Our Environment": {
+        definitions: {
+            "ecosystem": "Interaction of living and non-living things in an area.",
+            "food chain": "Sequence showing feeding relationship.",
+            "food web": "Interconnected food chains.",
+            "trophic level": "Position in food chain.",
+            "biodegradable": "Can be decomposed by microorganisms.",
+            "non-biodegradable": "Cannot be decomposed easily."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Grass → Grasshopper → Frog → Snake → Eagle.",
+            "Plastic: non-biodegradable waste."
+        ],
+        points: [
+            "Ozone layer protects Earth from UV rays.",
+            "Energy flow in ecosystem is unidirectional.",
+            "Waste management prevents pollution."
+        ]
+    },
+    // -----------------------------------------------------------------------
+    "Chapter 16: Management of Natural Resources": {
+        definitions: {
+            "resource": "Anything that can be used for benefit.",
+            "conservation": "Wise use and protection of resources.",
+            "sustainable development": "Development meeting present needs without harming future.",
+            "water harvesting": "Collection of rainwater for use.",
+            "reduce, reuse, recycle": "Methods to minimize resource waste."
+        },
+        formulas: [],
+        equations: [],
+        examples: [
+            "Rainwater harvesting in houses.",
+            "Recycling paper saves trees."
+        ],
+        points: [
+            "Resource conservation is essential for future.",
+            "Forests maintain ecological balance.",
+            "Everyone should practice 3Rs: Reduce, Reuse, Recycle."
+        ]
+    }
 };
 
-const questionPaper = [
-  "Define chemical reaction with example",
-  "Write balanced equation for combustion of methane",
-  "State Ohm's law and Joule's heating formula",
-  "Explain photosynthesis with equation",
-  "Write lens and mirror formulas",
-  "Difference between metals and non-metals",
-  "Explain reproduction in plants and humans",
-  "State laws of reflection and refraction",
-  "Define heredity and evolution",
-  "Write examples of neutralization and double displacement reactions"
+// Global array of exam-style random questions
+const globalQuestions = [
+    // Some sample questions per chapter (expand as needed)
+    // ------------C1
+    "Define chemical reaction.",
+    "Explain the law of conservation of mass with example.",
+    "List types of chemical reactions and give one example for each.",
+    "Write the equation for rusting of iron.",
+    "What is a redox reaction? Give example.",
+    "What is a balanced chemical equation?",
+    "Differentiate between displacement and double displacement reaction.",
+    "State two observations you may notice during a chemical reaction.",
+    "How is rancidity prevented?",
+    "Give an example of a combination reaction.",
+    // ------------C2
+    "What is the pH scale? How is it used?",
+    "Write the reaction for the preparation of baking soda.",
+    "Explain neutralization with a chemical equation.",
+    "Name two indicators and their colour changes.",
+    "Why is common salt important in daily life?",
+    "Define acid and base.",
+    // ------------C3
+    "What is the reactivity series of metals?",
+    "Write the equation for the reaction of sodium with water.",
+    "What is corrosion? How can it be prevented?",
+    "Differentiate between metal and non-metal.",
+    // ------------C4
+    "Define isomerism with an example.",
+    "Give the reaction for the combustion of methane.",
+    "Explain the term homologous series.",
+    "What is soap? How is it formed?",
+    // ------------C5
+    "What is modern periodic law?",
+    "Explain trends in atomic size in the periodic table.",
+    "Define group and period in periodic table.",
+    "What is metallic character?",
+    // ------------C6
+    "Write the equation for aerobic respiration.",
+    "Explain autotrophic and heterotrophic nutrition.",
+    "What is the function of nephron in kidney?",
+    // ------------C7
+    "What is a neuron?",
+    "Explain reflex action with example.",
+    "What is the role of hormone adrenaline?",
+    // ------------C8
+    "Define sexual reproduction.",
+    "Explain vegetative propagation with examples.",
+    "What is pollination?",
+    // ------------C9
+    "Define heredity.",
+    "What is speciation?",
+    "Explain Mendel's law of segregation.",
+    // ------------C10
+    "State laws of reflection.",
+    "Define refraction with example.",
+    "Write mirror formula.",
+    "Explain magnification with formula.",
+    "What is refractive index?",
+    // ------------C11
+    "What is myopia and how is it corrected?",
+    "Define dispersion of light.",
+    "Why do stars twinkle?",
+    // ------------C12
+    "State Ohm's law.",
+    "Define potential difference.",
+    "Write formula for resistance in parallel.",
+    "What is kilowatt hour?",
+    // ------------C13
+    "Explain electromagnetic induction.",
+    "State Fleming's left hand rule.",
+    "What is an electromagnet?",
+    // ------------C14
+    "Define renewable energy source.",
+    "Give two examples of non-renewable sources.",
+    // ------------C15
+    "Explain food chain with example.",
+    "List three methods of waste management.",
+    // ------------C16
+    "What is water harvesting?",
+    "Explain the 3Rs with example.",
 ];
 
-const formulaKeywords = ["formula","formulas","reaction","reactions","law","laws","equation","equations","heat formula"];
+const manualText = `<span style="color:#fd004c;font-weight:600;text-shadow:1px 0px 8px #fd004c;">NCERT Science Bot – Manual Commands</span>
+<ul>
+<li><b>question</b>: Get 10 random exam-style questions from the whole syllabus.</li>
+<li><b>[topic]</b>: Enter any topic, e.g. "chemical reaction", "baking soda", "autotrophic nutrition" etc. – you get the definition, core points, formulas, and examples.</li>
+<li><b>types of [topic]</b> or <b>types of reaction</b>: Shows all types for that topic, with definitions / sample equations.</li>
+<li><b>definition [topic]</b>: Get definition only for a specific topic (matched anywhere in the code).</li>
+<li><b>all definitions of [chapter]</b>: Shows all definitions from a specific chapter.</li>
+<li><b>formula [topic]</b>: Lists formulas for the topic + usage examples if available.</li>
+<li><b>summary [chapter/topic]</b>: Get summary bullet-points for chapter/topic.</li>
+<li><b>example [topic]</b>: Get solved/problem examples for topic.</li>
+<li><b>faq [topic]</b>: Get frequently asked question(s) and answer(s) for topic if available.</li>
+<li><b>manual</b> or <b>help</b>: Show this help/command manual.</li>
+</ul>
+`;
 
-function sendMessage() {
-  let input = document.getElementById("userInput").value.trim();
-  if(!input) return;
-  document.getElementById("userInput").value = "";
-  let lower = input.toLowerCase();
-  let chatbox = document.getElementById("chatbox");
-  chatbox.innerHTML += `<p class="user"><b>You:</b> ${input}</p>`;
-
-  if(lower.includes("question paper") || lower.includes("10 questions")) {
-    let picks = shuffle(questionPaper).slice(0,10);
-    chatbox.innerHTML += `<p class="bot"><b>Bot:</b> Here are 10 important questions:<br>${picks.map(q=>"• "+q).join("<br>")}</p>`;
-    chatbox.scrollTop = chatbox.scrollHeight;
-    return;
-  }
-
-  let found = [];
-  for(let ch in knowledge){
-    for(let topic in knowledge[ch]){
-      if(lower.includes(topic) || topic.split(/[\s\-]/).some(w=>lower.includes(w))){
-        found.push({topic, data: knowledge[ch][topic]});
-      }
+function getRandomQuestions() {
+    let arr = [];
+    let j = 0;
+    let used = {};
+    while (arr.length < 10 && j < globalQuestions.length * 3) {
+        let r = Math.floor(Math.random() * globalQuestions.length);
+        if (!used[r]) {
+            arr.push(globalQuestions[r]);
+            used[r] = 1;
+        }
+        j++;
     }
-  }
-
-  if(found.length===0){
-    chatbox.innerHTML += `<p class="bot"><b>Bot:</b> Sorry, I am not that knowledgeable about this topic.</p>`;
-  } else {
-    found.forEach(item=>{
-      let top = item.data;
-      let wantFormulas = formulaKeywords.some(k=>lower.includes(k));
-      if(wantFormulas && top.formulas && top.formulas.length>0){
-        chatbox.innerHTML += `<p class="bot"><span class="topic-title">Formulas / Reactions for "${item.topic}":</span><br>${top.formulas.join("<br>")}</p>`;
-      } else {
-        chatbox.innerHTML += `<p class="bot">
-          <span class="topic-title">Topic:</span> ${item.topic}<br>
-          <span class="topic-title">Definition:</span> ${top.definition || ""}<br>
-          ${top.points?("<span class='topic-title'>Important Points:</span> "+top.points.join(", ")+"<br>"):""}
-          ${top.formulas && top.formulas.length>0?("<span class='topic-title'>Formulas / Reactions:</span><br>"+top.formulas.join("<br>")+"<br>"):""}
-          ${top.example?("<span class='topic-title'>Example / Use:</span> "+top.example):""}
-        </p>`;
-      }
-    });
-  }
-  chatbox.scrollTop = chatbox.scrollHeight;
+    return arr;
 }
 
-function shuffle(arr){
-  let a = arr.slice();
-  for(let i=a.length-1;i>0;i--){
-    let j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
-  }
-  return a;
+// Utility: Case-insensitive fuzzy match in an object keys
+function objectFind(obj, key) {
+    key = key.toLowerCase().trim();
+    const found = Object.keys(obj).filter(k =>
+        k.replace(/[^\w\d]/g,'').toLowerCase().includes(key.replace(/[^\w\d]/g,'').toLowerCase())
+    );
+    return found.length ? obj[found[0]] : null;
 }
-</script>
 
+function chapterFind(chapInput) {
+    chapInput = chapInput.toLowerCase().replace(/\s+/g, "");
+    for(const c in data) {
+        if(c.replace(/\s+/g,"").toLowerCase().includes(chapInput))
+            return c;
+    }
+    return null;
+}
+
+// -- Chatbot System Logic --
+async function processInput(msg) {
+    const msgRaw = msg.trim();
+    const msgL = msgRaw.toLowerCase();
+    let chatWindow = document.getElementById('chat-window');
+    let reply = "";
+
+    if (!msgRaw) return;
+
+    // === 1. Manual/help
+    if (msgL === "manual" || msgL === "help" || msgL === "/help") {
+        reply = manualText;
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 2. Get random 10 questions
+    if (msgL === "question" || msgL === "questions") {
+        let qArr = getRandomQuestions();
+        reply = `<div style="font-weight:600;font-size:1.09em;">Here are 10 random questions for exam practice:</div>`;
+        reply += "<ol>";
+        for(const q of qArr) reply += `<li>${q}</li>`;
+        reply += "</ol>";
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 3. All definitions of [chapter]
+    if (msgL.startsWith("all definitions of")) {
+        let chapterName = msgRaw.substr(18).trim();
+        let chap = chapterFind(chapterName);
+        if(!chap) {
+            reply = "Chapter not found. Try phrases like 'all definitions of electricity'.";
+        } else {
+            let defs = data[chap]?.definitions;
+            if(!defs) reply = "No definitions found for " + chap + ".";
+            else {
+                reply = `<span style="font-size:1.13em;font-weight:500;color:#29e91a;margin-bottom:9px;">All definitions from <b>${chap}</b>:</span><ul>`;
+                for(const k in defs) reply += `<li><b>${k}:</b> ${defs[k]}</li>`;
+                reply += "</ul>";
+            }
+        }
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 4. Definition [topic]
+    if (msgL.startsWith("definition")) {
+        let key = msgRaw.substr(10).trim();
+        let foundDef = null;
+        for(const chap in data) {
+            foundDef = objectFind(data[chap].definitions || {}, key);
+            if(foundDef) {
+                reply = `<b>Definition of ${key}:</b> ${foundDef}`;
+                break;
+            }
+        }
+        if(!foundDef) reply = "No definition found. Try again with a clear keyword.";
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 5. All formulas for [topic]
+    if (msgL.startsWith("formula")) {
+        let key = msgRaw.substr(7).trim();
+        let foundForm = null;
+        let examplesList = [];
+        for(const chap in data) {
+            let forms = data[chap].formulas || [];
+            let eqs = data[chap].equations || [];
+            let exs = data[chap].examples || [];
+            for(const f of forms.concat(eqs)) {
+                if(f.toLowerCase().includes(key.toLowerCase())) {
+                    foundForm = foundForm || [];
+                    foundForm.push(f);
+                }
+            }
+            for(const ex of exs) {
+                if(ex.toLowerCase().includes(key.toLowerCase())) {
+                    examplesList.push(ex);
+                }
+            }
+        }
+        if(!foundForm) reply = "No formula found for '" + key + "'.";
+        else {
+            reply = `<b>Formulas for '${key}':</b><br>`;
+            for(const f of foundForm) reply += `<div style="margin-bottom:5px;">${f}</div>`;
+            if (examplesList.length) {
+                reply += `<span style="font-weight:600;font-size:1.08em;">Examples:</span><ul>`;
+                for(const ex of examplesList) reply += `<li>${ex}</li>`;
+                reply += "</ul>";
+            }
+        }
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 6. Types of [topic] or types of reaction
+    if (/^types of/.test(msgL)) {
+        let key = msgRaw.replace(/^types of /i, '').trim();
+        let found = null;
+        for(const chap in data) {
+            if(data[chap].typesOfReaction) {
+                found = data[chap].typesOfReaction.filter(obj =>
+                    obj.type.toLowerCase().includes(key.toLowerCase()) ||
+                    "reaction".includes(key.toLowerCase())
+                );
+                if(found.length === 0 && key.toLowerCase()==="reaction")
+                    found = data[chap].typesOfReaction;
+                if(found.length) {
+                    let replyArr = [];
+                    for(const obj of found)
+                        replyArr.push(`<b>${obj.type}:</b> ${obj.def}`);
+                    reply = replyArr.join("<br>");
+                    break;
+                }
+            }
+        }
+        if(!found || found.length===0) {
+            // Show default 'types of reactions' for Ch.1
+            reply = "";
+            let chap = data["Chapter 1: Chemical Reactions and Equations"];
+            if(chap?.typesOfReaction) {
+                for(const obj of chap.typesOfReaction)
+                    reply += `<b>${obj.type}:</b> ${obj.def}<br>`;
+            } else reply = "No types found for '" + key + "'.";
+        }
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 7. Summary [chapter/topic]
+    if (msgL.startsWith("summary")) {
+        let key = msgRaw.substr(7).trim();
+        let found = null;
+        for(const chap in data) {
+            if(chap.toLowerCase().includes(key.toLowerCase())) {
+                found = data[chap].points || [];
+                break;
+            }
+            for(const pt of (data[chap].points || [])) {
+                if(pt.toLowerCase().includes(key.toLowerCase())) {
+                    found = [pt];
+                    break;
+                }
+            }
+        }
+        if(!found) reply = "No summary found for '" + key + "'.";
+        else {
+            reply = `<b>Summary of '${key}':</b><ul>`;
+            for(const pt of found) reply += `<li>${pt}</li>`;
+            reply += "</ul>";
+        }
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 8. Example [topic]
+    if(msgL.startsWith("example")) {
+        let key = msgRaw.substr(7).trim();
+        let found = [];
+        for(const chap in data) {
+            for(const ex of (data[chap].examples||[])) {
+                if(ex.toLowerCase().includes(key.toLowerCase()))
+                    found.push(ex);
+            }
+        }
+        if(!found.length) reply = "No specific example found for '" + key + "'.";
+        else {
+            reply = `<b>Examples for '${key}':</b><ul>`;
+            for(const ex of found) reply += `<li>${ex}</li>`;
+            reply += "</ul>";
+        }
+        appendBotMsg(reply);
+        return;
+    }
+
+    // === 9. FAQ [topic]
+    if(msgL.startsWith("faq")) {
+        let key = msgRaw.substr(3).trim();
+        // For now, show one common doubt per topic from points
+        let foundFAQ = [];
+        for(const chap in data) {
+            if (data[chap].points) {
+                for(const pt of data[chap].points) {
+                    if(pt.toLowerCase().includes(key.toLowerCase())) foundFAQ.push(pt);
+                }
+            }
+        }
+        if(!foundFAQ.length) reply = "No FAQ found for '" + key + "'.";
+        else reply = `<b>FAQs for '${key}':</b><ul>` + foundFAQ.map(f=>`<li>${f}</li>`).join('') + "</ul>";
+        appendBotMsg(reply);
+        return;
+    }
+    
+    // === 10. Topic search and match (most sophisticated)
+    // e.g., "chemical reaction", "autotrophic nutrition"
+    let topicKey = msgRaw;
+    let found = [];
+    for(const chap in data) {
+        let defs = data[chap].definitions || {};
+        let pts = data[chap].points || [];
+        let eqs = data[chap].equations || [];
+        let forms = data[chap].formulas || [];
+        let exs = data[chap].examples || [];
+        let matchArr = [];
+        // If topic matches a definition key
+        for(const k in defs) {
+            if(k.replace(/[^\w\d]/g,'').toLowerCase().includes(topicKey.replace(/[^\w\d]/g,'').toLowerCase())) {
+                matchArr.push(`<b>Definition:</b> ${defs[k]}`);
+            }
+        }
+        // If topic matches points
+        for(const p of pts)
+            if(p.toLowerCase().includes(topicKey.toLowerCase()))
+                matchArr.push(`<b>Key Point:</b> ${p}`);
+        // If topic matches equations or formulas
+        for(const f of forms)
+            if(f.toLowerCase().includes(topicKey.toLowerCase()))
+                matchArr.push(`<b>Formula:</b> ${f}`);
+        for(const e of eqs)
+            if(e.toLowerCase().includes(topicKey.toLowerCase()))
+                matchArr.push(`<b>Chemical Equation:</b> ${e}`);
+        // If topic matches solved examples
+        for(const x of exs)
+            if(x.toLowerCase().includes(topicKey.toLowerCase()))
+                matchArr.push(`<b>Example:</b> ${x}`);
+        if(matchArr.length) {
+            found = matchArr;
+            break;
+        }
+    }
+    if(!found.length) reply = "Sorry, I couldn't find that topic. Try asking for a definition, formula, example, or check the manual.";
+    else reply = found.join("<br>");
+    appendBotMsg(reply);
+}
+
+// --- Chat Output Logic (with Typing Animation) ---
+function appendUserMsg(msg) {
+    let chatWindow = document.getElementById('chat-window');
+    chatWindow.innerHTML += `<div class="user-msg">${msg}</div>`;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function appendBotMsg(msg) {
+    let chatWindow = document.getElementById('chat-window');
+    let botDiv = document.createElement('div');
+    botDiv.className = 'bot-msg typing';
+    chatWindow.appendChild(botDiv);
+    // Typing animation logic
+    let i = 0;
+    function typingStep() {
+        if (i <= msg.length) {
+            botDiv.innerHTML = msg.slice(0, i) + "<span style='border-right:2px solid #29e91a;font-size:0.98em;'> </span>";
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            i++;
+            setTimeout(typingStep, 12 + Math.floor(Math.random()*15));
+        } else {
+            botDiv.innerHTML = msg;
+            botDiv.className = 'bot-msg';
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    }
+    typingStep();
+}
+
+document.getElementById('send-btn').onclick = function(){
+    let val = document.getElementById('user-input').value.trim();
+    if(!val) return;
+    appendUserMsg(val);
+    processInput(val);
+    document.getElementById('user-input').value = "";
+};
+document.getElementById('entry-bar').onsubmit = function(){
+    document.getElementById('send-btn').click();
+    return false;
+};
+document.getElementById('user-input').addEventListener('keydown', function(e){
+    if(e.key === "Enter"){document.getElementById('send-btn').click();}
+});
+
+// --- Initial Greeting ---
+appendBotMsg(`<span class="neon-red" style="font-size:1.15em;">Welcome to NCERT Class 10 Science Bot!</span><br>
+Type <b>manual</b> to see all command options.<br>
+Type your topic or question to get instant science answers.<br>
+(Theme: Black & Neon Red, Answers: Typing green)<br>`);
+    </script>
 </body>
 </html>
